@@ -1,5 +1,5 @@
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { InterviewPlan as InterviewPlanType } from "@/types";
@@ -8,6 +8,8 @@ import { motion } from "framer-motion";
 import DonationSection from "./DonationSection";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import { useLanguage } from "@/context/LanguageContext";
+import { toast } from "sonner";
 
 interface InterviewPlanProps {
   plan: InterviewPlanType;
@@ -15,34 +17,88 @@ interface InterviewPlanProps {
 
 const InterviewPlan = ({ plan }: InterviewPlanProps) => {
   const printRef = useRef<HTMLDivElement>(null);
+  const { t, language } = useLanguage();
+  const [pdfGenerating, setPdfGenerating] = useState(false);
 
   const handleDownloadPDF = async () => {
     if (!printRef.current) return;
     
-    const canvas = await html2canvas(printRef.current, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-    });
+    setPdfGenerating(true);
     
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-    });
-    
-    const imgWidth = 210;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-    pdf.save('plano-entrevista.pdf');
+    try {
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+      
+      const sections = Array.from(printRef.current.querySelectorAll('.card-hover'));
+      let heightOffset = 0;
+      
+      // Generate PDF for each section
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        
+        const canvas = await html2canvas(section as HTMLElement, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+        });
+        
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 210;
+        const pageHeight = 295;  
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // Add new page for sections after the first one
+        if (i > 0) {
+          pdf.addPage();
+        }
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      }
+      
+      pdf.save('plano-entrevista.pdf');
+      toast.success(language === 'en' ? 'PDF downloaded successfully!' : 
+                   language === 'es' ? 'PDF descargado con éxito!' : 
+                   'PDF baixado com sucesso!');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast.error(language === 'en' ? 'Error generating PDF' : 
+                 language === 'es' ? 'Error al generar PDF' : 
+                 'Erro ao gerar PDF');
+    } finally {
+      setPdfGenerating(false);
+    }
   };
 
   const handleEmailPlan = () => {
-    const subject = "Meu plano de preparação para entrevista";
-    const body = `Aqui está meu plano de preparação para entrevista:\n\n${plan.rawText}`;
-    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    try {
+      const subject = language === 'en' ? "My interview preparation plan" :
+                     language === 'es' ? "Mi plan de preparación para entrevista" :
+                     "Meu plano de preparação para entrevista";
+      
+      const body = language === 'en' ? `Here is my interview preparation plan:\n\n${plan.rawText}` :
+                  language === 'es' ? `Aquí está mi plan de preparación para entrevista:\n\n${plan.rawText}` :
+                  `Aqui está meu plano de preparação para entrevista:\n\n${plan.rawText}`;
+      
+      const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      
+      // Create a temporary anchor element to trigger the email client
+      const a = document.createElement('a');
+      a.href = mailtoLink;
+      a.target = '_blank';
+      a.click();
+      
+      toast.success(language === 'en' ? 'Email client opened!' : 
+                  language === 'es' ? '¡Cliente de correo abierto!' : 
+                  'Cliente de email aberto!');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      toast.error(language === 'en' ? 'Error opening email client' : 
+                language === 'es' ? 'Error al abrir el cliente de correo' : 
+                'Erro ao abrir cliente de email');
+    }
   };
 
   const formatContent = (content: string) => {
@@ -153,21 +209,26 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
 
         <motion.div variants={item}>
           <div className="glass-card overflow-hidden border border-white/20 p-6">
-            <h3 className="text-lg font-medium mb-4">Exportar plano</h3>
+            <h3 className="text-lg font-medium mb-4">{t('exportPlan')}</h3>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 onClick={handleDownloadPDF}
                 className="flex-1 bg-interview-blue hover:bg-interview-blue/90 text-white button-hover"
+                disabled={pdfGenerating}
               >
                 <Download className="mr-2 h-4 w-4" />
-                Baixar PDF
+                {pdfGenerating ? 
+                  (language === 'en' ? 'Generating...' : 
+                   language === 'es' ? 'Generando...' : 
+                   'Gerando...') : 
+                  t('downloadPDF')}
               </Button>
               <Button 
                 onClick={handleEmailPlan}
                 className="flex-1 bg-interview-purple hover:bg-interview-purple/90 text-white button-hover"
               >
                 <Mail className="mr-2 h-4 w-4" />
-                Enviar por email
+                {t('sendEmail')}
               </Button>
             </div>
           </div>

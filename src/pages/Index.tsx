@@ -8,10 +8,12 @@ import Header from "@/components/Header";
 import { generateInterviewPlan } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [plan, setPlan] = useState<InterviewPlanType | null>(null);
+  const { t, language } = useLanguage();
 
   const handleSubmit = async (data: FormData) => {
     try {
@@ -21,10 +23,18 @@ const Index = () => {
       const generatedPlan = await generateInterviewPlan(data);
       
       setPlan(generatedPlan);
-      toast.success("Seu plano de preparação está pronto!");
+      toast.success(
+        language === 'en' ? 'Your preparation plan is ready!' :
+        language === 'es' ? '¡Tu plan de preparación está listo!' :
+        'Seu plano de preparação está pronto!'
+      );
     } catch (error) {
       console.error("Error generating plan:", error);
-      toast.error("Erro ao gerar o plano. Por favor, tente novamente.");
+      toast.error(
+        language === 'en' ? 'Error generating the plan. Please try again.' :
+        language === 'es' ? 'Error al generar el plan. Por favor, inténtalo de nuevo.' :
+        'Erro ao gerar o plano. Por favor, tente novamente.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +85,7 @@ const Index = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  ← Voltar ao formulário
+                  ← {t('backToForm')}
                 </motion.button>
               </div>
               <InterviewPlan plan={plan} />

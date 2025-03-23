@@ -1,7 +1,9 @@
 
 import { motion } from "framer-motion";
+import { useLanguage } from "@/context/LanguageContext";
 
 const LoadingAnimation = () => {
+  const { t } = useLanguage();
   // Create an array for dots animation
   const dots = Array.from({ length: 3 });
 
@@ -54,24 +56,12 @@ const LoadingAnimation = () => {
               🔍
             </motion.div>
           </div>
-          
-          <motion.div
-            className="absolute -inset-2 rounded-full opacity-40"
-            animate={{ 
-              boxShadow: ["0 0 0 0 rgba(59, 130, 246, 0)", "0 0 0 10px rgba(59, 130, 246, 0.3)", "0 0 0 20px rgba(59, 130, 246, 0)"],
-            }}
-            transition={{ 
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
         </div>
         
-        <h3 className="text-xl font-medium text-center mb-3">Estamos analisando sua vaga</h3>
+        <h3 className="text-xl font-medium text-center mb-3">{t('loading.title')}</h3>
         
         <p className="text-interview-dark-gray text-center max-w-md mb-6 text-sm md:text-base">
-          Estamos analisando sua vaga, seu perfil e preparando um plano sob medida para sua entrevista...
+          {t('loading.message')}
         </p>
         
         <motion.div 

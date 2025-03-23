@@ -1,10 +1,14 @@
 
 import { motion } from "framer-motion";
+import LanguageSelector from "./LanguageSelector";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Header = () => {
+  const { t } = useLanguage();
+  
   return (
     <motion.header 
-      className="w-full py-6 px-4 sm:px-6 flex justify-center items-center"
+      className="w-full py-6 px-4 sm:px-6 flex justify-between items-center"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -18,7 +22,7 @@ const Header = () => {
         >
           <span className="text-3xl">🚀</span>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-interview-blue to-interview-purple bg-clip-text text-transparent">
-            InterviewPrep
+            {t('app.title')}
           </h1>
         </motion.div>
         <motion.p 
@@ -27,9 +31,11 @@ const Header = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          Use IA para se preparar para suas próximas entrevistas de emprego
+          {t('app.subtitle')}
         </motion.p>
       </div>
+      
+      <LanguageSelector />
     </motion.header>
   );
 };
