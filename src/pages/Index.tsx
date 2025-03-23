@@ -7,7 +7,7 @@ import LoadingAnimation from "@/components/LoadingAnimation";
 import Header from "@/components/Header";
 import { generateInterviewPlan } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
