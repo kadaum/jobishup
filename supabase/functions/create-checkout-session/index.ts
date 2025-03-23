@@ -20,10 +20,10 @@ serve(async (req) => {
   try {
     console.log("Create checkout session function called");
     
-    // Get Stripe secret key from environment variables
-    const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
+    // Using the provided Stripe secret key
+    const stripeSecretKey = "sk_live_fol2YaEUyWnM4aafaFTdMQms";
     if (!stripeSecretKey) {
-      console.error("Missing STRIPE_SECRET_KEY environment variable");
+      console.error("Missing Stripe secret key");
       throw new Error("Server configuration error: missing Stripe key");
     }
 

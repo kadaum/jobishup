@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 // Initialize Stripe with your live publishable key
-const stripePromise = loadStripe("pk_live_51Oi6d1Kt8rM5DFSYajJTmkXuVGJDCaIkLmXkHZh0Hj8XaGVN37tDYrqCuGKF5NiWLhI1XwYdYUAx1IW0rl4DwpSa00g3pVoNUb");
+const stripePromise = loadStripe("pk_live_fol2YaEUyWnM4aafaFTdMQms");
 
 // Predefined donation amounts
 const DONATION_AMOUNTS = [
@@ -40,8 +40,8 @@ const DonationSection = () => {
         body: JSON.stringify({
           amount: selectedAmount,
           currency: 'brl',
-          successUrl: `${window.location.origin}?donation=success`,
-          cancelUrl: `${window.location.origin}?donation=canceled`,
+          successUrl: 'https://interviewharmony.lovable.app/thank-you',
+          cancelUrl: 'https://interviewharmony.lovable.app/',
           userId: user?.id, // This is optional now
         }),
       });
@@ -169,7 +169,7 @@ const DonationSection = () => {
             ) : (
               <>
                 <Heart className="mr-2 h-4 w-4 text-interview-purple" fill="#8B5CF6" />
-                Apoiar com uma doação
+                Doar agora
               </>
             )}
           </Button>
