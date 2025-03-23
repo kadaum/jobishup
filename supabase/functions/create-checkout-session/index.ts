@@ -18,6 +18,8 @@ serve(async (req) => {
   }
   
   try {
+    console.log("Create checkout session function called");
+    
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
       apiVersion: "2023-10-16",
     });
@@ -29,6 +31,12 @@ serve(async (req) => {
 
     // Get the request payload
     const { amount, currency, successUrl, cancelUrl, userId } = await req.json();
+    
+    console.log("Received request data:", { amount, currency, userId });
+    
+    if (!amount || amount <= 0) {
+      throw new Error("Invalid donation amount");
+    }
     
     // Create a checkout session
     const session = await stripe.checkout.sessions.create({
@@ -53,14 +61,22 @@ serve(async (req) => {
       },
     });
 
+    console.log("Stripe session created:", session.id);
+
     // Store donation in database
-    await supabaseClient.from("donations").insert({
+    const { error: insertError } = await supabaseClient.from("donations").insert({
       user_id: userId || null,
       amount,
       currency: currency || "brl",
       payment_intent_id: session.payment_intent as string,
       status: "pending",
     });
+
+    if (insertError) {
+      console.error("Error inserting donation record:", insertError);
+    } else {
+      console.log("Donation record inserted successfully");
+    }
 
     // Return the session ID
     return new Response(

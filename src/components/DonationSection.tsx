@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heart } from "lucide-react";
@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 // Initialize Stripe with your publishable key
-// Note: In a production app, consider storing this in an environment variable
 const stripePromise = loadStripe("pk_test_51Oi6d1Kt8rM5DFSYnFoeBHLIdBMtYpCmXhxA9FWu0vQPvyQlwAF1qU9CBRC7pPpF0eVD0jQCXeLdkFDjEEU0HKpz00VR9e1tPL");
 
 // Predefined donation amounts
@@ -30,6 +29,8 @@ const DonationSection = () => {
       // Get the current user (if logged in)
       const { data: { user } } = await supabase.auth.getUser();
       
+      console.log("Starting donation process with amount:", selectedAmount);
+      
       // Create a checkout session using our Supabase Edge Function
       const response = await fetch(
         'https://shpxzvlqaykbsprgzbbe.supabase.co/functions/v1/create-checkout-session',
@@ -37,7 +38,6 @@ const DonationSection = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY || ""}`,
           },
           body: JSON.stringify({
             amount: selectedAmount,
@@ -49,16 +49,21 @@ const DonationSection = () => {
         }
       );
       
+      console.log("Response status:", response.status);
+      
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("Error data:", errorData);
         throw new Error(errorData.error || 'Failed to create checkout session');
       }
       
       const { sessionId } = await response.json();
+      console.log("Session ID received:", sessionId);
       
       // Redirect to Stripe Checkout
       const stripe = await stripePromise;
       if (stripe) {
+        console.log("Redirecting to Stripe checkout with session ID:", sessionId);
         const { error } = await stripe.redirectToCheckout({ sessionId });
         
         if (error) {
@@ -75,7 +80,7 @@ const DonationSection = () => {
   };
 
   // Check for success or canceled status in URL params
-  useState(() => {
+  useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const donationStatus = urlParams.get('donation');
     
