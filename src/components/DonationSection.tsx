@@ -6,6 +6,7 @@ import { Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 // Initialize Stripe with your publishable key
 // Note: In a production app, consider storing this in an environment variable
@@ -26,22 +27,31 @@ const DonationSection = () => {
     setIsLoading(true);
     
     try {
-      // Create a checkout session
-      const response = await fetch('https://us-central1-interview-prep-stripe.cloudfunctions.net/createCheckoutSession', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: selectedAmount,
-          currency: 'brl',
-          successUrl: window.location.origin,
-          cancelUrl: window.location.origin,
-        }),
-      });
+      // Get the current user (if logged in)
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      // Create a checkout session using our Supabase Edge Function
+      const response = await fetch(
+        'https://shpxzvlqaykbsprgzbbe.supabase.co/functions/v1/create-checkout-session',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY || ""}`,
+          },
+          body: JSON.stringify({
+            amount: selectedAmount,
+            currency: 'brl',
+            successUrl: `${window.location.origin}?donation=success`,
+            cancelUrl: `${window.location.origin}?donation=canceled`,
+            userId: user?.id,
+          }),
+        }
+      );
       
       if (!response.ok) {
-        throw new Error('Failed to create checkout session');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create checkout session');
       }
       
       const { sessionId } = await response.json();
@@ -63,6 +73,22 @@ const DonationSection = () => {
       setIsLoading(false);
     }
   };
+
+  // Check for success or canceled status in URL params
+  useState(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const donationStatus = urlParams.get('donation');
+    
+    if (donationStatus === 'success') {
+      toast.success('Obrigado pela sua doação!');
+      // Remove the query parameter
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (donationStatus === 'canceled') {
+      toast.error('Doação cancelada.');
+      // Remove the query parameter
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
 
   return (
     <motion.div

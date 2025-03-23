@@ -27,3 +27,14 @@ export interface InterviewPlan {
   finalTips: Section;
   rawText?: string;
 }
+
+export interface Donation {
+  id: string;
+  user_id?: string;
+  amount: number;
+  currency: string;
+  status: string;
+  payment_intent_id?: string;
+  created_at: string;
+  updated_at: string;
+}
