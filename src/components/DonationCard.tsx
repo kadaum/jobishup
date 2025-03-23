@@ -16,9 +16,9 @@ const DonationCard = () => {
   const handleDonation = async () => {
     try {
       setIsLoading(true);
-      // Use the specific product ID provided by the user
+      // We'll implement the Stripe checkout logic here later
       console.log(`Processing donation of $${selectedAmount}`);
-      window.open("https://buy.stripe.com/price_1R5xFEFGTEX3WDSkiyoGDiIb", "_blank");
+      window.open("https://buy.stripe.com/test_28o9CWdxL1hGgYo144", "_blank");
     } catch (error) {
       console.error("Error processing donation:", error);
     } finally {
