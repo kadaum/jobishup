@@ -1,8 +1,9 @@
+
 import { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { InterviewPlan as InterviewPlanType } from "@/types";
-import { Download, Mail, Heart } from "lucide-react";
+import { Download, Share2, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import DonationSection from "./DonationSection";
 import { jsPDF } from "jspdf";
@@ -75,43 +76,41 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
     }
   };
 
-  const handleEmailPlan = () => {
+  const handleSharePlan = async () => {
     try {
-      // Create the email subject and body based on the current language
-      const subject = encodeURIComponent(
-        language === 'en' ? "My Interview Preparation Plan" :
-        language === 'es' ? "Mi Plan de Preparación para Entrevista" :
-        "Meu Plano de Preparação para Entrevista"
-      );
+      // Create text content for sharing
+      let textContent = plan.rawText;
       
-      // Prepare the email body with all plan sections
-      let body = "";
-      
-      // Add plan sections to the email body
-      [plan.process, plan.questions, plan.questionsToAsk, plan.studyMaterials, plan.finalTips].forEach(section => {
-        body += `${section.title}\n\n${section.content}\n\n`;
-      });
-      
-      // Encode the body for the mailto link
-      const encodedBody = encodeURIComponent(body);
-      
-      // Create the mailto link
-      const mailtoLink = `mailto:?subject=${subject}&body=${encodedBody}`;
-      
-      // Open the email client
-      window.open(mailtoLink, '_blank');
-      
-      toast.success(
-        language === 'en' ? 'Email client opened!' : 
-        language === 'es' ? '¡Cliente de correo abierto!' : 
-        'Cliente de email aberto!'
-      );
+      // Check if navigator.share is available (mobile devices)
+      if (navigator.share) {
+        await navigator.share({
+          title: language === 'en' ? 'My Interview Preparation Plan' :
+                language === 'es' ? 'Mi Plan de Preparación para Entrevista' :
+                'Meu Plano de Preparação para Entrevista',
+          text: textContent
+        });
+        
+        toast.success(
+          language === 'en' ? 'Plan shared successfully!' : 
+          language === 'es' ? '¡Plan compartido con éxito!' : 
+          'Plano compartilhado com sucesso!'
+        );
+      } else {
+        // Fallback for desktop - copy to clipboard
+        await navigator.clipboard.writeText(textContent);
+        
+        toast.success(
+          language === 'en' ? 'Plan copied to clipboard!' : 
+          language === 'es' ? '¡Plan copiado al portapapeles!' : 
+          'Plano copiado para a área de transferência!'
+        );
+      }
     } catch (error) {
-      console.error('Error opening email client:', error);
+      console.error('Error sharing plan:', error);
       toast.error(
-        language === 'en' ? 'Error opening email client' : 
-        language === 'es' ? 'Error al abrir el cliente de correo' : 
-        'Erro ao abrir cliente de email'
+        language === 'en' ? 'Error sharing plan' : 
+        language === 'es' ? 'Error al compartir el plan' : 
+        'Erro ao compartilhar o plano'
       );
     }
   };
@@ -239,11 +238,11 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
                   t('downloadPDF')}
               </Button>
               <Button 
-                onClick={handleEmailPlan}
+                onClick={handleSharePlan}
                 className="flex-1 bg-interview-purple hover:bg-interview-purple/90 text-white button-hover"
               >
-                <Mail className="mr-2 h-4 w-4" />
-                {t('sendEmail')}
+                <Share2 className="mr-2 h-4 w-4" />
+                {t('sharePlan')}
               </Button>
             </div>
           </div>

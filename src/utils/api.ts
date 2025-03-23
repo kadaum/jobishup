@@ -1,4 +1,3 @@
-
 import { FormData, InterviewPlan } from "@/types";
 
 // This is a mock function that simulates a ChatGPT API call
@@ -279,51 +278,51 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
   if (isEnglish) {
     techQuestionsContent = `Here are some common questions you might face and how to approach them:
 
-**Technical Questions:**
+Technical Questions:
 - Explain your experience with the technologies listed in the job description.
 - How would you solve [specific technical problem]?
 - Can you discuss a challenging project you've worked on?
 
-**Approach:** Provide concrete examples and use the STAR method (Situation, Task, Action, Result). Be ready to whiteboard or code if asked.
+Approach: Provide concrete examples and use the STAR method (Situation, Task, Action, Result). Be ready to whiteboard or code if asked.
 
-**Behavioral Questions:**
+Behavioral Questions:
 - Tell me about a time you faced a difficult technical challenge.
 - How do you prioritize tasks when dealing with multiple deadlines?
 - Describe a situation where you had to learn a new technology quickly.
 
-**Approach:** Prepare 5-7 stories that highlight your skills and adaptability. Focus on measurable outcomes and lessons learned.`;
+Approach: Prepare 5-7 stories that highlight your skills and adaptability. Focus on measurable outcomes and lessons learned.`;
   } else if (isSpanish) {
     techQuestionsContent = `Aquí hay algunas preguntas comunes que podrías enfrentar y cómo abordarlas:
 
-**Preguntas Técnicas:**
+Preguntas Técnicas:
 - Explica tu experiencia con las tecnologías enumeradas en la descripción del puesto.
 - ¿Cómo resolverías [problema técnico específico]?
 - ¿Puedes hablar sobre un proyecto desafiante en el que hayas trabajado?
 
-**Enfoque:** Proporciona ejemplos concretos y utiliza el método STAR (Situación, Tarea, Acción, Resultado). Prepárate para explicar o codificar si te lo piden.
+Enfoque: Proporciona ejemplos concretos y utiliza el método STAR (Situación, Tarea, Acción, Resultado). Prepárate para explicar o codificar si te lo piden.
 
-**Preguntas de Comportamiento:**
+Preguntas de Comportamiento:
 - Cuéntame sobre un momento en que enfrentaste un desafío técnico difícil.
 - ¿Cómo priorizas tareas cuando tienes múltiples plazos?
 - Describe una situación en la que tuviste que aprender una nueva tecnología rápidamente.
 
-**Enfoque:** Prepara 5-7 historias que destaquen tus habilidades y adaptabilidad. Concéntrate en resultados medibles y lecciones aprendidas.`;
+Enfoque: Prepara 5-7 historias que destaquen tus habilidades y adaptabilidad. Concéntrate en resultados medibles y lecciones aprendidas.`;
   } else {
     techQuestionsContent = `Aqui estão algumas perguntas comuns que você pode enfrentar e como abordá-las:
 
-**Perguntas Técnicas:**
+Perguntas Técnicas:
 - Explique sua experiência com as tecnologias listadas na descrição da vaga.
 - Como você resolveria [problema técnico específico]?
 - Você pode discutir um projeto desafiador em que trabalhou?
 
-**Abordagem:** Forneça exemplos concretos e use o método STAR (Situação, Tarefa, Ação, Resultado). Esteja pronto para explicar ou codificar se solicitado.
+Abordagem: Forneça exemplos concretos e use o método STAR (Situação, Tarefa, Ação, Resultado). Esteja pronto para explicar ou codificar se solicitado.
 
-**Perguntas Comportamentais:**
+Perguntas Comportamentais:
 - Conte-me sobre um momento em que você enfrentou um desafio técnico difícil.
 - Como você prioriza tarefas ao lidar com vários prazos?
 - Descreva uma situação em que você teve que aprender uma nova tecnologia rapidamente.
 
-**Abordagem:** Prepare 5-7 histórias que destacam suas habilidades e adaptabilidade. Concentre-se em resultados mensuráveis e lições aprendidas.`;
+Abordagem: Prepare 5-7 histórias que destacam suas habilidades e adaptabilidade. Concentre-se em resultados mensuráveis e lições aprendidas.`;
   }
 
   let managementQuestionsContent = "";
@@ -331,51 +330,51 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
   if (isEnglish) {
     managementQuestionsContent = `Here are some common questions you might face and how to approach them:
 
-**Leadership Questions:**
+Leadership Questions:
 - How do you motivate your team during challenging projects?
 - Describe your leadership style and how it adapts to different situations.
 - Tell me about a time you had to make a difficult decision for your team.
 
-**Approach:** Focus on your philosophy of leadership, with examples of how you've grown teams and navigated challenges.
+Approach: Focus on your philosophy of leadership, with examples of how you've grown teams and navigated challenges.
 
-**Strategic Questions:**
+Strategic Questions:
 - How would you improve our product/service based on what you know?
 - How do you balance short-term results with long-term strategy?
 - How do you stay informed about industry trends?
 
-**Approach:** Research the company thoroughly and be ready to show your strategic thinking and vision.`;
+Approach: Research the company thoroughly and be ready to show your strategic thinking and vision.`;
   } else if (isSpanish) {
     managementQuestionsContent = `Aquí hay algunas preguntas comunes que podrías enfrentar y cómo abordarlas:
 
-**Preguntas de Liderazgo:**
+Preguntas de Liderazgo:
 - ¿Cómo motivas a tu equipo durante proyectos desafiantes?
 - Describe tu estilo de liderazgo y cómo se adapta a diferentes situaciones.
 - Cuéntame sobre un momento en que tuviste que tomar una decisión difícil para tu equipo.
 
-**Enfoque:** Concéntrate en tu filosofía de liderazgo, con ejemplos de cómo has desarrollado equipos y navegado desafíos.
+Enfoque: Concéntrate en tu filosofía de liderazgo, con ejemplos de cómo has desarrollado equipos y navegado desafíos.
 
-**Preguntas Estratégicas:**
+Preguntas Estratégicas:
 - ¿Cómo mejorarías nuestro producto/servicio basándote en lo que sabes?
 - ¿Cómo equilibras los resultados a corto plazo con la estrategia a largo plazo?
 - ¿Cómo te mantienes informado sobre las tendencias de la industria?
 
-**Enfoque:** Investiga la empresa a fondo y prepárate para mostrar tu pensamiento estratégico y visión.`;
+Enfoque: Investiga la empresa a fondo y prepárate para mostrar tu pensamiento estratégico y visión.`;
   } else {
     managementQuestionsContent = `Aqui estão algumas perguntas comuns que você pode enfrentar e como abordá-las:
 
-**Perguntas de Liderança:**
+Perguntas de Liderança:
 - Como você motiva sua equipe durante projetos desafiadores?
 - Descreva seu estilo de liderança e como ele se adapta a diferentes situações.
 - Conte-me sobre uma vez em que você teve que tomar uma decisão difícil para sua equipe.
 
-**Abordagem:** Concentre-se em sua filosofia de liderança, com exemplos de como você desenvolveu equipes e navegou por desafios.
+Abordagem: Concentre-se em sua filosofia de liderança, com exemplos de como você desenvolveu equipes e navegou por desafios.
 
-**Perguntas Estratégicas:**
+Perguntas Estratégicas:
 - Como você melhoraria nosso produto/serviço com base no que sabe?
 - Como você equilibra resultados de curto prazo com estratégia de longo prazo?
 - Como você se mantém informado sobre tendências do setor?
 
-**Abordagem:** Pesquise a empresa detalhadamente e esteja pronto para mostrar seu pensamento estratégico e visão.`;
+Abordagem: Pesquise a empresa detalhadamente e esteja pronto para mostrar seu pensamento estratégico e visão.`;
   }
 
   let questionsToAskContent = "";
@@ -390,7 +389,7 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
 - How is performance evaluated?
 - What's the most exciting project the team has worked on recently?
 
-**Pro tip:** Take notes during the interview to ask specific follow-up questions based on what was discussed.`;
+Pro tip: Take notes during the interview to ask specific follow-up questions based on what was discussed.`;
   } else if (isSpanish) {
     questionsToAskContent = `Hacer preguntas bien pensadas muestra tu interés y compromiso. Considera preguntar:
 
@@ -401,7 +400,7 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
 - ¿Cómo se evalúa el desempeño?
 - ¿Cuál es el proyecto más emocionante en el que ha trabajado el equipo recientemente?
 
-**Consejo profesional:** Toma notas durante la entrevista para hacer preguntas específicas de seguimiento basadas en lo que se discutió.`;
+Consejo profesional: Toma notas durante la entrevista para hacer preguntas específicas de seguimiento basadas en lo que se discutió.`;
   } else {
     questionsToAskContent = `Fazer perguntas bem pensadas mostra seu interesse e engajamento. Considere perguntar:
 
@@ -412,7 +411,7 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
 - Como o desempenho é avaliado?
 - Qual foi o projeto mais empolgante em que a equipe trabalhou recentemente?
 
-**Dica profissional:** Faça anotações durante a entrevista para fazer perguntas específicas de acompanhamento com base no que foi discutido.`;
+Dica profissional: Faça anotações durante a entrevista para fazer perguntas específicas de acompanhamento com base no que foi discutido.`;
   }
 
   // Study materials section - customize based on whether it's a tech role or not
@@ -422,54 +421,54 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
     if (isEnglish) {
       studyMaterialsContent = `Before your interview, review these key areas:
 
-**Technical Preparation:**
+Technical Preparation:
 - Review fundamentals of the key technologies mentioned in the job description
 - Practice coding challenges on platforms like LeetCode or HackerRank
 - Review system design concepts if applying for a senior role
 - Refresh your knowledge of relevant frameworks and tools
 
-**Company Research:**
+Company Research:
 - Study ${formData.companyName}'s products/services and recent developments
 - Research their technology stack and engineering culture
 - Read their engineering blog or technical case studies if available
 
-**Recommended Resources:**
+Recommended Resources:
 - Recent industry articles related to the company's technology domain
 - Documentation for technologies listed in the job description
 - Company reviews on Glassdoor for interview insights`;
     } else if (isSpanish) {
       studyMaterialsContent = `Antes de tu entrevista, revisa estas áreas clave:
 
-**Preparación Técnica:**
+Preparación Técnica:
 - Revisa los fundamentos de las tecnologías clave mencionadas en la descripción del puesto
 - Practica desafíos de programación en plataformas como LeetCode o HackerRank
 - Revisa conceptos de diseño de sistemas si estás aplicando para un rol senior
 - Actualiza tu conocimiento sobre frameworks y herramientas relevantes
 
-**Investigación de la Empresa:**
+Investigación de la Empresa:
 - Estudia los productos/servicios de ${formData.companyName} y desarrollos recientes
 - Investiga su stack tecnológico y cultura de ingeniería
 - Lee su blog de ingeniería o casos de estudio técnicos si están disponibles
 
-**Recursos Recomendados:**
+Recursos Recomendados:
 - Artículos recientes de la industria relacionados con el dominio tecnológico de la empresa
 - Documentación de las tecnologías enumeradas en la descripción del puesto
 - Reseñas de la empresa en Glassdoor para conocer detalles sobre las entrevistas`;
     } else {
       studyMaterialsContent = `Antes da sua entrevista, revise estas áreas-chave:
 
-**Preparação Técnica:**
+Preparação Técnica:
 - Revise os fundamentos das principais tecnologias mencionadas na descrição da vaga
 - Pratique desafios de codificação em plataformas como LeetCode ou HackerRank
 - Revise conceitos de design de sistemas se estiver se candidatando a uma função sênior
 - Atualize seu conhecimento sobre frameworks e ferramentas relevantes
 
-**Pesquisa da Empresa:**
+Pesquisa da Empresa:
 - Estude os produtos/serviços da ${formData.companyName} e desenvolvimentos recentes
 - Pesquise sua stack de tecnologia e cultura de engenharia
 - Leia o blog de engenharia ou estudos de caso técnicos, se disponíveis
 
-**Recursos Recomendados:**
+Recursos Recomendados:
 - Artigos recentes do setor relacionados ao domínio de tecnologia da empresa
 - Documentação para tecnologias listadas na descrição da vaga
 - Avaliações da empresa no Glassdoor para insights sobre entrevistas`;
@@ -478,17 +477,17 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
     if (isEnglish) {
       studyMaterialsContent = `Before your interview, focus on these key areas:
 
-**Leadership Preparation:**
+Leadership Preparation:
 - Review your leadership accomplishments and be ready to quantify results
 - Prepare examples of how you've developed teams and managed challenges
 - Consider how your leadership style aligns with ${formData.companyName}'s culture
 
-**Business Research:**
+Business Research:
 - Study ${formData.companyName}'s business model, market position, and competitors
 - Analyze recent company news, earnings reports, and strategic initiatives
 - Understand the industry landscape and current challenges
 
-**Recommended Resources:**
+Recommended Resources:
 - Annual reports and investor presentations
 - Industry analysis reports relevant to ${formData.companyName}'s sector
 - Recent interviews or talks by company executives
@@ -496,17 +495,17 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
     } else if (isSpanish) {
       studyMaterialsContent = `Antes de tu entrevista, concéntrate en estas áreas clave:
 
-**Preparación de Liderazgo:**
+Preparación de Liderazgo:
 - Revisa tus logros de liderazgo y prepárate para cuantificar resultados
 - Prepara ejemplos de cómo has desarrollado equipos y gestionado desafíos
 - Considera cómo tu estilo de liderazgo se alinea con la cultura de ${formData.companyName}
 
-**Investigación de Negocios:**
+Investigación de Negocios:
 - Estudia el modelo de negocio de ${formData.companyName}, posición en el mercado y competidores
 - Analiza noticias recientes de la empresa, informes de ganancias e iniciativas estratégicas
 - Comprende el panorama de la industria y los desafíos actuales
 
-**Recursos Recomendados:**
+Recursos Recomendados:
 - Informes anuales y presentaciones para inversores
 - Informes de análisis de la industria relevantes para el sector de ${formData.companyName}
 - Entrevistas o charlas recientes de ejecutivos de la empresa
@@ -514,17 +513,17 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
     } else {
       studyMaterialsContent = `Antes da sua entrevista, concentre-se nestas áreas-chave:
 
-**Preparação de Liderança:**
+Preparação de Liderança:
 - Revise suas realizações de liderança e esteja pronto para quantificar resultados
 - Prepare exemplos de como você desenvolveu equipes e gerenciou desafios
 - Considere como seu estilo de liderança se alinha à cultura da ${formData.companyName}
 
-**Pesquisa de Negócios:**
+Pesquisa de Negócios:
 - Estude o modelo de negócios da ${formData.companyName}, posição de mercado e concorrentes
 - Analise notícias recentes da empresa, relatórios de lucros e iniciativas estratégicas
 - Entenda o panorama do setor e os desafios atuais
 
-**Recursos Recomendados:**
+Recursos Recomendados:
 - Relatórios anuais e apresentações para investidores
 - Relatórios de análise do setor relevantes para o setor da ${formData.companyName}
 - Entrevistas ou palestras recentes de executivos da empresa
@@ -534,17 +533,17 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
     if (isEnglish) {
       studyMaterialsContent = `Before your interview, review these key areas:
 
-**Role-Specific Preparation:**
+Role-Specific Preparation:
 - Review the job description and identify key skills and requirements
 - Prepare examples from your experience that demonstrate these skills
 - Research industry best practices related to your role
 
-**Company Research:**
+Company Research:
 - Study ${formData.companyName}'s products/services, mission, and values
 - Research recent company news and developments
 - Understand their market position and competitors
 
-**Recommended Resources:**
+Recommended Resources:
 - Company website, LinkedIn page, and social media
 - Industry publications relevant to your role
 - Informational interviews with connections who work in similar roles
@@ -552,17 +551,17 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
     } else if (isSpanish) {
       studyMaterialsContent = `Antes de tu entrevista, revisa estas áreas clave:
 
-**Preparación Específica para el Rol:**
+Preparación Específica para el Rol:
 - Revisa la descripción del puesto e identifica habilidades y requisitos clave
 - Prepara ejemplos de tu experiencia que demuestren estas habilidades
 - Investiga las mejores prácticas de la industria relacionadas con tu rol
 
-**Investigación de la Empresa:**
+Investigación de la Empresa:
 - Estudia los productos/servicios, misión y valores de ${formData.companyName}
 - Investiga noticias y desarrollos recientes de la empresa
 - Comprende su posición en el mercado y competidores
 
-**Recursos Recomendados:**
+Recursos Recomendados:
 - Sitio web de la empresa, página de LinkedIn y redes sociales
 - Publicaciones de la industria relevantes para tu rol
 - Entrevistas informativas con conexiones que trabajan en roles similares
@@ -570,17 +569,17 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
     } else {
       studyMaterialsContent = `Antes da sua entrevista, revise estas áreas-chave:
 
-**Preparação Específica para a Função:**
+Preparação Específica para a Função:
 - Revise a descrição do cargo e identifique habilidades e requisitos principais
 - Prepare exemplos de sua experiência que demonstrem essas habilidades
 - Pesquise as melhores práticas do setor relacionadas à sua função
 
-**Pesquisa da Empresa:**
+Pesquisa da Empresa:
 - Estude os produtos/serviços, missão e valores da ${formData.companyName}
 - Pesquise notícias e desenvolvimentos recentes da empresa
 - Entenda sua posição no mercado e concorrentes
 
-**Recursos Recomendados:**
+Recursos Recomendados:
 - Site da empresa, página do LinkedIn e redes sociais
 - Publicações do setor relevantes para sua função
 - Entrevistas informativas com conexões que trabalham em funções semelhantes
@@ -593,51 +592,51 @@ Prepare-se para uma mistura de perguntas técnicas e comportamentais ao longo do
   if (isEnglish) {
     finalTipsContent = `Final personalized advice for your interview:
 
-- **Prepare your interview environment** if it's a virtual interview. Test your technology, ensure good lighting and a professional background.
+- Prepare your interview environment if it's a virtual interview. Test your technology, ensure good lighting and a professional background.
 
-- **Dress professionally** according to ${formData.companyName}'s culture. When in doubt, slightly overdress.
+- Dress professionally according to ${formData.companyName}'s culture. When in doubt, slightly overdress.
 
-- **Practice your responses** out loud, ideally with a friend for feedback. Record yourself to review your delivery.
+- Practice your responses out loud, ideally with a friend for feedback. Record yourself to review your delivery.
 
-- **Prepare a concise "tell me about yourself"** answer that highlights relevant experience.
+- Prepare a concise "tell me about yourself" answer that highlights relevant experience.
 
-- **Bring copies of your resume** and a notepad for in-person interviews.
+- Bring copies of your resume and a notepad for in-person interviews.
 
-- **Send a thank-you note** within 24 hours after the interview.
+- Send a thank-you note within 24 hours after the interview.
 
-- **Take care of yourself** the day before - get enough sleep, eat well, and take time to relax. Your mental state significantly impacts your performance.`;
+- Take care of yourself the day before - get enough sleep, eat well, and take time to relax. Your mental state significantly impacts your performance.`;
   } else if (isSpanish) {
     finalTipsContent = `Consejos finales personalizados para tu entrevista:
 
-- **Prepara tu entorno de entrevista** si es una entrevista virtual. Prueba tu tecnología, asegura buena iluminación y un fondo profesional.
+- Prepara tu entorno de entrevista si es una entrevista virtual. Prueba tu tecnología, asegura buena iluminación y un fondo profesional.
 
-- **Vístete profesionalmente** de acuerdo con la cultura de ${formData.companyName}. En caso de duda, vístete un poco más formal.
+- Vístete profesionalmente de acuerdo con la cultura de ${formData.companyName}. En caso de duda, vístete un poco más formal.
 
-- **Practica tus respuestas** en voz alta, idealmente con un amigo para recibir comentarios. Grábate para revisar tu presentación.
+- Practica tus respuestas en voz alta, idealmente con un amigo para recibir comentarios. Grábate para revisar tu presentación.
 
-- **Prepara una respuesta concisa para "háblame sobre ti"** que destaque experiencia relevante.
+- Prepara una respuesta concisa para "háblame sobre ti" que destaque experiencia relevante.
 
-- **Lleva copias de tu currículum** y un bloc de notas para entrevistas presenciales.
+- Lleva copias de tu currículum y un bloc de notas para entrevistas presenciales.
 
-- **Envía una nota de agradecimiento** dentro de las 24 horas posteriores a la entrevista.
+- Envía una nota de agradecimiento dentro de las 24 horas posteriores a la entrevista.
 
-- **Cuídate** el día anterior - duerme lo suficiente, aliméntate bien y tómate tiempo para relajarte. Tu estado mental impacta significativamente en tu desempeño.`;
+- Cuídate el día anterior - duerme lo suficiente, aliméntate bien y tómate tiempo para relajarte. Tu estado mental impacta significativamente en tu desempeño.`;
   } else {
     finalTipsContent = `Conselhos finais personalizados para sua entrevista:
 
-- **Prepare seu ambiente de entrevista** se for uma entrevista virtual. Teste sua tecnologia, garanta boa iluminação e um fundo profissional.
+- Prepare seu ambiente de entrevista se for uma entrevista virtual. Teste sua tecnologia, garanta boa iluminação e um fundo profissional.
 
-- **Vista-se profissionalmente** de acordo com a cultura da ${formData.companyName}. Em caso de dúvida, vista-se um pouco mais formalmente.
+- Vista-se profissionalmente de acordo com a cultura da ${formData.companyName}. Em caso de dúvida, vista-se um pouco mais formalmente.
 
-- **Pratique suas respostas** em voz alta, idealmente com um amigo para feedback. Grave-se para revisar sua apresentação.
+- Pratique suas respostas em voz alta, idealmente com um amigo para feedback. Grave-se para revisar sua apresentação.
 
-- **Prepare uma resposta concisa para "fale sobre você"** que destaque experiência relevante.
+- Prepare uma resposta concisa para "fale sobre você" que destaque experiência relevante.
 
-- **Leve cópias do seu currículo** e um bloco de notas para entrevistas presenciais.
+- Leve cópias do seu currículo e um bloco de notas para entrevistas presenciais.
 
-- **Envie uma nota de agradecimento** dentro de 24 horas após a entrevista.
+- Envie uma nota de agradecimento dentro de 24 horas após a entrevista.
 
-- **Cuide de si mesmo** no dia anterior - durma o suficiente, alimente-se bem e reserve um tempo para relaxar. Seu estado mental impacta significativamente seu desempenho.`;
+- Cuide de si mesmo no dia anterior - durma o suficiente, alimente-se bem e reserve um tempo para relaxar. Seu estado mental impacta significativamente seu desempenho.`;
   }
 
   // Build the full mock response

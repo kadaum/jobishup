@@ -1,4 +1,3 @@
-
 export interface FormData {
   jobTitle: string;
   companyName: string;
@@ -6,11 +5,12 @@ export interface FormData {
   candidateLinkedIn?: string;
   interviewerLinkedIn?: string;
   interviewDate?: string;
-  interviewType?: string;
-  jobLevel?: string;
-  interviewLanguage?: string;
+  interviewType?: "technical" | "behavioral" | "strategic" | "cultural";
+  jobLevel?: "junior" | "mid" | "senior" | "leadership";
+  interviewLanguage?: "portuguese" | "english" | "spanish";
   practicePoints?: string;
   personalContext?: string;
+  selectedLanguage?: string;
 }
 
 export interface Section {
