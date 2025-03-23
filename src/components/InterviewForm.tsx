@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,7 +36,6 @@ const InterviewForm = ({ onSubmit, isLoading }: InterviewFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.jobTitle || !formData.companyName) return;
-    // Add language to form data
     onSubmit({...formData, selectedLanguage: language });
   };
 
@@ -84,14 +82,14 @@ const InterviewForm = ({ onSubmit, isLoading }: InterviewFormProps) => {
 
               <motion.div variants={itemVariants} className="space-y-1">
                 <Label htmlFor="companyName" className="text-sm font-medium">
-                  {t('form.company')} <span className="text-red-500">*</span>
+                  {t('form.companyName')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="companyName"
                   name="companyName"
                   value={formData.companyName}
                   onChange={handleChange}
-                  placeholder={t('form.companyPlaceholder')}
+                  placeholder={t('form.companyNamePlaceholder')}
                   className="border-interview-light-blue focus:border-interview-blue"
                   required
                 />
