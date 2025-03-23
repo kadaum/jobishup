@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { InterviewPlan as InterviewPlanType } from "@/types";
 import PlanSection from "./plan/PlanSection";
 import ExportOptions from "./plan/ExportOptions";
+import DonationCard from "./DonationCard";
 
 interface InterviewPlanProps {
   plan: InterviewPlanType;
@@ -51,11 +52,21 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
       </div>
 
       <motion.div 
-        className="mt-10"
+        className="mt-10 flex flex-col space-y-8"
         variants={container}
         initial="hidden"
         animate="show"
       >
+        <motion.div 
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+          }}
+          className="opacity-80 hover:opacity-100 transition-opacity duration-300"
+        >
+          <DonationCard />
+        </motion.div>
+
         <ExportOptions plan={plan} printRef={printRef} />
       </motion.div>
     </motion.div>

@@ -1,4 +1,3 @@
-
 export const translations = {
   "app.title": "Interview Prep",
   "app.subtitle": "Domine suas entrevistas de emprego com um plano personalizado",
@@ -43,9 +42,9 @@ export const translations = {
   "downloadPDF": "Baixar como PDF",
   "sharePlan": "Compartilhar",
   "sendEmail": "Enviar por Email",
-  "donate.title": "Gostou dessa ferramenta?",
-  "donate.description": "Me ajude a manter este projeto gratuito.",
-  "donate.button": "Fazer uma doação",
+  "donate.title": "Gostou desta ferramenta?",
+  "donate.description": "Ajude-me a manter este projeto gratuito com uma pequena doação.",
+  "donate.button": "Doar",
   "plan.ready": "Seu plano está pronto!",
   "plan.error": "Erro ao gerar o plano. Por favor, tente novamente.",
   "plan.savePlan": "Salvar plano",
