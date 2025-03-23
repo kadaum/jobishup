@@ -2,7 +2,6 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { InterviewPlan as InterviewPlanType } from "@/types";
-import DonationSection from "./DonationSection";
 import PlanSection from "./plan/PlanSection";
 import ExportOptions from "./plan/ExportOptions";
 
@@ -52,20 +51,11 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
       </div>
 
       <motion.div 
-        className="mt-10 flex flex-col space-y-8"
+        className="mt-10"
         variants={container}
         initial="hidden"
         animate="show"
       >
-        <motion.div 
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-          }}
-        >
-          <DonationSection />
-        </motion.div>
-
         <ExportOptions plan={plan} printRef={printRef} />
       </motion.div>
     </motion.div>
