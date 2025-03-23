@@ -32,7 +32,7 @@ serve(async (req) => {
     // Get the request payload
     const { amount, currency, successUrl, cancelUrl, userId } = await req.json();
     
-    console.log("Received request data:", { amount, currency, userId });
+    console.log("Received request data:", { amount, currency, userId, successUrl, cancelUrl });
     
     if (!amount || amount <= 0) {
       throw new Error("Invalid donation amount");

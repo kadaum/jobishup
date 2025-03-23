@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -31,45 +30,41 @@ const DonationSection = () => {
       
       console.log("Starting donation process with amount:", selectedAmount);
       
-      // Create a checkout session using our Supabase Edge Function
-      const response = await fetch(
-        'https://shpxzvlqaykbsprgzbbe.supabase.co/functions/v1/create-checkout-session',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount: selectedAmount,
-            currency: 'brl',
-            successUrl: `${window.location.origin}?donation=success`,
-            cancelUrl: `${window.location.origin}?donation=canceled`,
-            userId: user?.id,
-          }),
+      // Use Supabase's built-in function invoker instead of direct fetch
+      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+        body: {
+          amount: selectedAmount,
+          currency: 'brl',
+          successUrl: `${window.location.origin}?donation=success`,
+          cancelUrl: `${window.location.origin}?donation=canceled`,
+          userId: user?.id,
         }
-      );
+      });
       
-      console.log("Response status:", response.status);
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error data:", errorData);
-        throw new Error(errorData.error || 'Failed to create checkout session');
+      if (error) {
+        console.error("Supabase function error:", error);
+        throw new Error(error.message || 'Failed to create checkout session');
       }
       
-      const { sessionId } = await response.json();
-      console.log("Session ID received:", sessionId);
+      console.log("Response data:", data);
+      
+      if (!data.sessionId) {
+        console.error("No session ID received:", data);
+        throw new Error('Invalid response from server');
+      }
       
       // Redirect to Stripe Checkout
       const stripe = await stripePromise;
       if (stripe) {
-        console.log("Redirecting to Stripe checkout with session ID:", sessionId);
-        const { error } = await stripe.redirectToCheckout({ sessionId });
+        console.log("Redirecting to Stripe checkout with session ID:", data.sessionId);
+        const { error: stripeError } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
         
-        if (error) {
-          console.error('Stripe redirect error:', error);
-          toast.error('Ocorreu um erro. Por favor, tente novamente.');
+        if (stripeError) {
+          console.error('Stripe redirect error:', stripeError);
+          throw new Error(stripeError.message || 'Error redirecting to checkout');
         }
+      } else {
+        throw new Error('Failed to initialize Stripe');
       }
     } catch (error) {
       console.error('Donation error:', error);
