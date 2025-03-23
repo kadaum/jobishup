@@ -66,6 +66,36 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_plans: {
+        Row: {
+          company_name: string
+          content: Json
+          created_at: string
+          id: string
+          job_title: string
+          raw_text: string | null
+          user_id: string
+        }
+        Insert: {
+          company_name: string
+          content: Json
+          created_at?: string
+          id?: string
+          job_title: string
+          raw_text?: string | null
+          user_id: string
+        }
+        Update: {
+          company_name?: string
+          content?: Json
+          created_at?: string
+          id?: string
+          job_title?: string
+          raw_text?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

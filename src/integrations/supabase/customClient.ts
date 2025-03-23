@@ -4,10 +4,11 @@ import { SavedPlan } from '@/types';
 
 // Type assertions to fix TypeScript errors with Supabase tables
 // This is necessary because the Supabase types don't include our custom tables
+type Tables = 'saved_plans';
 
 export const getSavedPlans = async (): Promise<SavedPlan[]> => {
   const { data, error } = await supabase
-    .from('saved_plans')
+    .from('saved_plans' as Tables)
     .select('*')
     .order('created_at', { ascending: false });
 
@@ -25,9 +26,15 @@ export const savePlan = async (planData: {
   content: any;
   raw_text?: string;
 }): Promise<void> => {
+  // Add user_id to the plan data
+  const userData = { 
+    ...planData, 
+    user_id: supabase.auth.getUser().then(({ data }) => data.user?.id)
+  };
+  
   const { error } = await supabase
-    .from('saved_plans')
-    .insert(planData);
+    .from('saved_plans' as Tables)
+    .insert(userData as any);
 
   if (error) {
     console.error('Error saving plan:', error);
@@ -37,7 +44,7 @@ export const savePlan = async (planData: {
 
 export const deleteSavedPlan = async (id: string): Promise<void> => {
   const { error } = await supabase
-    .from('saved_plans')
+    .from('saved_plans' as Tables)
     .delete()
     .eq('id', id);
 
