@@ -122,7 +122,7 @@ const DonationSection = () => {
             }}
           >
             <span className="inline-block bg-interview-light-purple text-interview-purple px-3 py-1 rounded-full text-sm font-medium">
-              {language === 'en' ? 'Support 💜' : language === 'es' ? 'Apoya 💜' : 'Apoie 💜'}
+              {t('donate')} 💜
             </span>
           </motion.div>
         </div>

@@ -23,18 +23,10 @@ const Index = () => {
       const generatedPlan = await generateInterviewPlan(data);
       
       setPlan(generatedPlan);
-      toast.success(
-        language === 'en' ? 'Your preparation plan is ready!' :
-        language === 'es' ? '¡Tu plan de preparación está listo!' :
-        'Seu plano de preparação está pronto!'
-      );
+      toast.success(t('plan.ready'));
     } catch (error) {
       console.error("Error generating plan:", error);
-      toast.error(
-        language === 'en' ? 'Error generating the plan. Please try again.' :
-        language === 'es' ? 'Error al generar el plan. Por favor, inténtalo de nuevo.' :
-        'Erro ao gerar o plano. Por favor, tente novamente.'
-      );
+      toast.error(t('plan.error'));
     } finally {
       setIsLoading(false);
     }

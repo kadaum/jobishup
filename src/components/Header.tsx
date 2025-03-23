@@ -13,7 +13,7 @@ const Header = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex flex-col items-center mb-4 md:mb-0">
+      <div className="flex flex-col items-center mb-4 md:mb-0 md:mx-auto">
         <motion.div 
           className="flex items-center gap-2 mb-2"
           initial={{ scale: 0.9 }}
@@ -35,7 +35,9 @@ const Header = () => {
         </motion.p>
       </div>
       
-      <LanguageSelector />
+      <div className="md:absolute md:right-6">
+        <LanguageSelector />
+      </div>
     </motion.header>
   );
 };

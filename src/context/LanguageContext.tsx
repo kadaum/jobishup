@@ -24,7 +24,19 @@ const translations = {
     'donate.processing': 'Processando...',
     'donate.error': 'Não foi possível processar sua doação. Por favor, tente novamente.',
     'donate.success': 'Obrigado pela sua doação!',
-    'donate.canceled': 'Doação cancelada.'
+    'donate.canceled': 'Doação cancelada.',
+    'plan.ready': 'Seu plano de preparação está pronto!',
+    'plan.error': 'Erro ao gerar o plano. Por favor, tente novamente.',
+    'form.jobTitle': 'Cargo desejado',
+    'form.jobTitlePlaceholder': 'Ex: Desenvolvedor Frontend',
+    'form.company': 'Empresa',
+    'form.companyPlaceholder': 'Ex: Google',
+    'form.experience': 'Anos de experiência',
+    'form.experiencePlaceholder': 'Ex: 3',
+    'form.skills': 'Principais habilidades',
+    'form.skillsPlaceholder': 'Ex: React, TypeScript, CSS',
+    'form.generate': 'Gerar plano de entrevista',
+    'form.generating': 'Gerando plano...'
   },
   en: {
     'app.title': 'InterviewPrep',
@@ -42,7 +54,19 @@ const translations = {
     'donate.processing': 'Processing...',
     'donate.error': 'We could not process your donation. Please try again.',
     'donate.success': 'Thank you for your donation!',
-    'donate.canceled': 'Donation canceled.'
+    'donate.canceled': 'Donation canceled.',
+    'plan.ready': 'Your preparation plan is ready!',
+    'plan.error': 'Error generating the plan. Please try again.',
+    'form.jobTitle': 'Desired position',
+    'form.jobTitlePlaceholder': 'Ex: Frontend Developer',
+    'form.company': 'Company',
+    'form.companyPlaceholder': 'Ex: Google',
+    'form.experience': 'Years of experience',
+    'form.experiencePlaceholder': 'Ex: 3',
+    'form.skills': 'Main skills',
+    'form.skillsPlaceholder': 'Ex: React, TypeScript, CSS',
+    'form.generate': 'Generate interview plan',
+    'form.generating': 'Generating plan...'
   },
   es: {
     'app.title': 'InterviewPrep',
@@ -60,7 +84,19 @@ const translations = {
     'donate.processing': 'Procesando...',
     'donate.error': 'No pudimos procesar tu donación. Por favor, inténtalo de nuevo.',
     'donate.success': '¡Gracias por tu donación!',
-    'donate.canceled': 'Donación cancelada.'
+    'donate.canceled': 'Donación cancelada.',
+    'plan.ready': '¡Tu plan de preparación está listo!',
+    'plan.error': 'Error al generar el plan. Por favor, inténtalo de nuevo.',
+    'form.jobTitle': 'Puesto deseado',
+    'form.jobTitlePlaceholder': 'Ej: Desarrollador Frontend',
+    'form.company': 'Empresa',
+    'form.companyPlaceholder': 'Ej: Google',
+    'form.experience': 'Años de experiencia',
+    'form.experiencePlaceholder': 'Ej: 3',
+    'form.skills': 'Habilidades principales',
+    'form.skillsPlaceholder': 'Ej: React, TypeScript, CSS',
+    'form.generate': 'Generar plan de entrevista',
+    'form.generating': 'Generando plan...'
   }
 };
 
@@ -85,6 +121,9 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // Update localStorage when language changes
     localStorage.setItem('preferred-language', language);
+    
+    // Force re-render of components when language changes
+    document.documentElement.setAttribute('lang', language);
   }, [language]);
 
   return (
