@@ -19,6 +19,12 @@ const LanguageSelector = () => {
     { code: 'es', name: 'Español' }
   ];
 
+  const handleLanguageChange = (langCode: string) => {
+    setLanguage(langCode);
+    // Store the language preference in localStorage so it persists between sessions
+    localStorage.setItem('preferred-language', langCode);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,7 +37,7 @@ const LanguageSelector = () => {
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => setLanguage(lang.code)}
+            onClick={() => handleLanguageChange(lang.code)}
             className={language === lang.code ? "bg-muted" : ""}
           >
             {lang.name}

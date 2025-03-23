@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Initialize Stripe with the live publishable key
 const stripePromise = loadStripe("pk_live_fol2YaEUyWnM4aafaFTdMQms");
@@ -21,6 +22,7 @@ const DONATION_AMOUNTS = [
 const DonationSection = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState(DONATION_AMOUNTS[0].value);
+  const { t, language } = useLanguage();
 
   const handleDonate = async () => {
     setIsLoading(true);
@@ -77,7 +79,7 @@ const DonationSection = () => {
       }
     } catch (error) {
       console.error('Donation error:', error);
-      toast.error('Não foi possível processar sua doação. Por favor, tente novamente.');
+      toast.error(t('donate.error'));
     } finally {
       setIsLoading(false);
     }
@@ -89,15 +91,15 @@ const DonationSection = () => {
     const donationStatus = urlParams.get('donation');
     
     if (donationStatus === 'success') {
-      toast.success('Obrigado pela sua doação!');
+      toast.success(t('donate.success'));
       // Remove the query parameter
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (donationStatus === 'canceled') {
-      toast.error('Doação cancelada.');
+      toast.error(t('donate.canceled'));
       // Remove the query parameter
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+  }, [t]);
 
   return (
     <motion.div
@@ -120,17 +122,17 @@ const DonationSection = () => {
             }}
           >
             <span className="inline-block bg-interview-light-purple text-interview-purple px-3 py-1 rounded-full text-sm font-medium">
-              Apoie 💜
+              {language === 'en' ? 'Support 💜' : language === 'es' ? 'Apoya 💜' : 'Apoie 💜'}
             </span>
           </motion.div>
         </div>
         
         <div className="text-center mb-6">
           <h3 className="text-xl font-medium mb-3">
-            🫶 Curtiu o InterviewPrep?
+            🫶 {t('donate.callToAction')}
           </h3>
           <p className="text-interview-dark-gray">
-            Se esse plano te ajudou, você pode nos apoiar com uma doação.
+            {t('donate.description')}
           </p>
         </div>
         
@@ -164,12 +166,12 @@ const DonationSection = () => {
             {isLoading ? (
               <div className="flex items-center justify-center">
                 <div className="animate-spin h-4 w-4 border-2 border-interview-purple border-t-transparent rounded-full mr-2" />
-                Processando...
+                {t('donate.processing')}
               </div>
             ) : (
               <>
                 <Heart className="mr-2 h-4 w-4 text-interview-purple" fill="#8B5CF6" />
-                Doar agora
+                {t('donate.button')}
               </>
             )}
           </Button>

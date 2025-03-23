@@ -1,4 +1,3 @@
-
 import { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -33,11 +32,15 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
       });
       
       const sections = Array.from(printRef.current.querySelectorAll('.card-hover'));
-      let heightOffset = 0;
       
       // Generate PDF for each section
       for (let i = 0; i < sections.length; i++) {
         const section = sections[i];
+        
+        // Add new page for sections after the first one
+        if (i > 0) {
+          pdf.addPage();
+        }
         
         const canvas = await html2canvas(section as HTMLElement, {
           scale: 2,
@@ -46,27 +49,27 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
         });
         
         const imgData = canvas.toDataURL('image/png');
-        const imgWidth = 210;
-        const pageHeight = 295;  
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 297;  // A4 height in mm
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        
-        // Add new page for sections after the first one
-        if (i > 0) {
-          pdf.addPage();
-        }
         
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       }
       
-      pdf.save('plano-entrevista.pdf');
-      toast.success(language === 'en' ? 'PDF downloaded successfully!' : 
-                   language === 'es' ? 'PDF descargado con éxito!' : 
-                   'PDF baixado com sucesso!');
+      pdf.save('interview-plan.pdf');
+      
+      toast.success(
+        language === 'en' ? 'PDF downloaded successfully!' : 
+        language === 'es' ? '¡PDF descargado con éxito!' : 
+        'PDF baixado com sucesso!'
+      );
     } catch (error) {
       console.error('Error generating PDF:', error);
-      toast.error(language === 'en' ? 'Error generating PDF' : 
-                 language === 'es' ? 'Error al generar PDF' : 
-                 'Erro ao gerar PDF');
+      toast.error(
+        language === 'en' ? 'Error generating PDF' : 
+        language === 'es' ? 'Error al generar PDF' : 
+        'Erro ao gerar PDF'
+      );
     } finally {
       setPdfGenerating(false);
     }
@@ -74,30 +77,42 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
 
   const handleEmailPlan = () => {
     try {
-      const subject = language === 'en' ? "My interview preparation plan" :
-                     language === 'es' ? "Mi plan de preparación para entrevista" :
-                     "Meu plano de preparação para entrevista";
+      // Create the email subject and body based on the current language
+      const subject = encodeURIComponent(
+        language === 'en' ? "My Interview Preparation Plan" :
+        language === 'es' ? "Mi Plan de Preparación para Entrevista" :
+        "Meu Plano de Preparação para Entrevista"
+      );
       
-      const body = language === 'en' ? `Here is my interview preparation plan:\n\n${plan.rawText}` :
-                  language === 'es' ? `Aquí está mi plan de preparación para entrevista:\n\n${plan.rawText}` :
-                  `Aqui está meu plano de preparação para entrevista:\n\n${plan.rawText}`;
+      // Prepare the email body with all plan sections
+      let body = "";
       
-      const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      // Add plan sections to the email body
+      [plan.process, plan.questions, plan.questionsToAsk, plan.studyMaterials, plan.finalTips].forEach(section => {
+        body += `${section.title}\n\n${section.content}\n\n`;
+      });
       
-      // Create a temporary anchor element to trigger the email client
-      const a = document.createElement('a');
-      a.href = mailtoLink;
-      a.target = '_blank';
-      a.click();
+      // Encode the body for the mailto link
+      const encodedBody = encodeURIComponent(body);
       
-      toast.success(language === 'en' ? 'Email client opened!' : 
-                  language === 'es' ? '¡Cliente de correo abierto!' : 
-                  'Cliente de email aberto!');
+      // Create the mailto link
+      const mailtoLink = `mailto:?subject=${subject}&body=${encodedBody}`;
+      
+      // Open the email client
+      window.open(mailtoLink, '_blank');
+      
+      toast.success(
+        language === 'en' ? 'Email client opened!' : 
+        language === 'es' ? '¡Cliente de correo abierto!' : 
+        'Cliente de email aberto!'
+      );
     } catch (error) {
-      console.error('Error sending email:', error);
-      toast.error(language === 'en' ? 'Error opening email client' : 
-                language === 'es' ? 'Error al abrir el cliente de correo' : 
-                'Erro ao abrir cliente de email');
+      console.error('Error opening email client:', error);
+      toast.error(
+        language === 'en' ? 'Error opening email client' : 
+        language === 'es' ? 'Error al abrir el cliente de correo' : 
+        'Erro ao abrir cliente de email'
+      );
     }
   };
 
@@ -219,8 +234,8 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
                 <Download className="mr-2 h-4 w-4" />
                 {pdfGenerating ? 
                   (language === 'en' ? 'Generating...' : 
-                   language === 'es' ? 'Generando...' : 
-                   'Gerando...') : 
+                  language === 'es' ? 'Generando...' : 
+                  'Gerando...') : 
                   t('downloadPDF')}
               </Button>
               <Button 

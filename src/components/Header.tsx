@@ -8,12 +8,12 @@ const Header = () => {
   
   return (
     <motion.header 
-      className="w-full py-6 px-4 sm:px-6 flex justify-between items-center"
+      className="w-full py-6 px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center mb-4 md:mb-0">
         <motion.div 
           className="flex items-center gap-2 mb-2"
           initial={{ scale: 0.9 }}
