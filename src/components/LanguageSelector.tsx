@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Language } from "@/types";
 
 const LanguageSelector = () => {
-  const { language, changeLanguage } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
@@ -20,7 +20,7 @@ const LanguageSelector = () => {
   const toggleDropdown = () => setIsOpen(!isOpen);
   
   const handleLanguageSelect = (value: Language) => {
-    changeLanguage(value);
+    setLanguage(value);
     setIsOpen(false);
   };
 

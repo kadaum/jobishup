@@ -1,7 +1,5 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-
-type Language = "pt" | "en" | "es";
+import { Language } from "@/types";
 
 interface Translations {
   [key: string]: {

@@ -7,10 +7,10 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
-import { supabase } from "@/integrations/supabase/client";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { SavedPlan } from "@/types";
+import { getSavedPlans, deleteSavedPlan } from "@/integrations/supabase/customClient";
 
 const SavedPlans = () => {
   const [plans, setPlans] = useState<SavedPlan[]>([]);
@@ -33,15 +33,10 @@ const SavedPlans = () => {
       setLoading(true);
       
       // Fetch plans from the saved_plans table
-      const { data, error } = await supabase
-        .from("saved_plans")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
+      const data = await getSavedPlans();
       
       // Cast to the correct type
-      setPlans(data as SavedPlan[] || []);
+      setPlans(data || []);
     } catch (error) {
       console.error("Error fetching saved plans:", error);
       toast.error(t('savedPlans.errorFetching'));
@@ -53,12 +48,7 @@ const SavedPlans = () => {
   const handleDeletePlan = async (id: string) => {
     try {
       // Delete from the saved_plans table
-      const { error } = await supabase
-        .from("saved_plans")
-        .delete()
-        .eq("id", id);
-
-      if (error) throw error;
+      await deleteSavedPlan(id);
       
       // Update local state to remove the deleted plan
       setPlans((prev) => prev.filter((plan) => plan.id !== id));

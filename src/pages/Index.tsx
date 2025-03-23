@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { FormData, InterviewPlan as InterviewPlanType } from "@/types";
 import InterviewForm from "@/components/InterviewForm";
@@ -10,9 +9,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
+import { savePlan } from "@/integrations/supabase/customClient";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -54,15 +53,12 @@ const Index = () => {
     if (!plan || !formData) return;
 
     try {
-      // Use the 'saved_plans' table that's now in our database
-      const { error } = await supabase.from("saved_plans").insert({
+      await savePlan({
         job_title: formData.jobTitle,
         company_name: formData.companyName,
         content: plan,
         raw_text: plan.rawText
       });
-
-      if (error) throw error;
       
       toast.success(t('plan.saved'));
     } catch (error) {
