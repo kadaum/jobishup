@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Heart, Coffee, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useLanguage } from "@/context/LanguageContext";
+import { toast } from "sonner";
 
 const donationAmounts = [5, 10, 25, 50];
 
@@ -16,11 +16,41 @@ const DonationCard = () => {
   const handleDonation = async () => {
     try {
       setIsLoading(true);
-      // We'll implement the Stripe checkout logic here later
       console.log(`Processing donation of $${selectedAmount}`);
-      window.open("https://buy.stripe.com/test_28o9CWdxL1hGgYo144", "_blank");
+      
+      // Convert dollars to cents for Stripe
+      const amountInCents = selectedAmount * 100;
+      
+      // Call our Supabase Edge Function
+      const response = await fetch(
+        "https://shpxzvlqaykbsprgzbbe.supabase.co/functions/v1/create-checkout-session",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: amountInCents,
+            currency: "brl"
+          }),
+        }
+      );
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create checkout session");
+      }
+      
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.open(data.url, "_blank");
+      } else {
+        throw new Error("No checkout URL received");
+      }
     } catch (error) {
       console.error("Error processing donation:", error);
+      toast.error("Error processing donation. Please try again.");
     } finally {
       setIsLoading(false);
     }
