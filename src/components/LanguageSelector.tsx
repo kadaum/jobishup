@@ -1,50 +1,81 @@
 
-import React from 'react';
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import { Globe } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Check, ChevronDown, Globe } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from '@/context/LanguageContext';
+import { motion, AnimatePresence } from "framer-motion";
+import { Language } from "@/types";
 
 const LanguageSelector = () => {
-  const { language, setLanguage } = useLanguage();
-
-  const languages = [
-    { code: 'pt', name: 'Português' },
-    { code: 'en', name: 'English' },
-    { code: 'es', name: 'Español' }
+  const { language, changeLanguage } = useLanguage();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const languageOptions = [
+    { value: "en" as Language, label: "English" },
+    { value: "pt" as Language, label: "Português" },
+    { value: "es" as Language, label: "Español" }
   ];
 
-  const handleLanguageChange = (langCode: string) => {
-    setLanguage(langCode);
-    // Store the language preference in localStorage so it persists between sessions
-    localStorage.setItem('preferred-language', langCode);
+  const toggleDropdown = () => setIsOpen(!isOpen);
+  
+  const handleLanguageSelect = (value: Language) => {
+    changeLanguage(value);
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const getLabelForLanguage = (lang: string): string => {
+    const option = languageOptions.find(opt => opt.value === lang);
+    return option ? option.label : languageOptions[0].label;
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="flex items-center gap-2">
-          <Globe className="h-4 w-4" />
-          <span>{languages.find(lang => lang.code === language)?.name || 'Português'}</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {languages.map((lang) => (
-          <DropdownMenuItem
-            key={lang.code}
-            onClick={() => handleLanguageChange(lang.code)}
-            className={language === lang.code ? "bg-muted" : ""}
+    <div className="relative" ref={dropdownRef}>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={toggleDropdown}
+        className="flex items-center gap-1 border-0 bg-transparent hover:bg-white/10"
+      >
+        <Globe className="h-4 w-4" />
+        <span className="hidden sm:inline">{getLabelForLanguage(language)}</span>
+        <ChevronDown className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </Button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="absolute right-0 mt-2 w-40 bg-white dark:bg-slate-900 shadow-lg rounded-md overflow-hidden z-50 border border-slate-200 dark:border-slate-800"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.2 }}
           >
-            {lang.name}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+            {languageOptions.map((option) => (
+              <button
+                key={option.value}
+                className="flex items-center justify-between w-full px-4 py-2 text-sm text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                onClick={() => handleLanguageSelect(option.value)}
+              >
+                {option.label}
+                {language === option.value && <Check className="h-4 w-4" />}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 

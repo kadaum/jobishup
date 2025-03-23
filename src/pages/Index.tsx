@@ -54,6 +54,7 @@ const Index = () => {
     if (!plan || !formData) return;
 
     try {
+      // Use the 'saved_plans' table that's now in our database
       const { error } = await supabase.from("saved_plans").insert({
         job_title: formData.jobTitle,
         company_name: formData.companyName,

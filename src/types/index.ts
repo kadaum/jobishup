@@ -1,3 +1,4 @@
+
 export interface FormData {
   jobTitle: string;
   companyName: string;
@@ -38,3 +39,15 @@ export interface Donation {
   created_at: string;
   updated_at: string;
 }
+
+export interface SavedPlan {
+  id: string;
+  user_id: string;
+  job_title: string;
+  company_name: string;
+  content: InterviewPlan;
+  raw_text?: string;
+  created_at: string;
+}
+
+export type Language = "en" | "pt" | "es";

@@ -10,14 +10,7 @@ import Header from "@/components/Header";
 import { supabase } from "@/integrations/supabase/client";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
-
-interface SavedPlan {
-  id: string;
-  job_title: string;
-  company_name: string;
-  content: any;
-  created_at: string;
-}
+import { SavedPlan } from "@/types";
 
 const SavedPlans = () => {
   const [plans, setPlans] = useState<SavedPlan[]>([]);
@@ -38,13 +31,17 @@ const SavedPlans = () => {
   const fetchSavedPlans = async () => {
     try {
       setLoading(true);
+      
+      // Fetch plans from the saved_plans table
       const { data, error } = await supabase
         .from("saved_plans")
         .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setPlans(data || []);
+      
+      // Cast to the correct type
+      setPlans(data as SavedPlan[] || []);
     } catch (error) {
       console.error("Error fetching saved plans:", error);
       toast.error(t('savedPlans.errorFetching'));
@@ -55,6 +52,7 @@ const SavedPlans = () => {
 
   const handleDeletePlan = async (id: string) => {
     try {
+      // Delete from the saved_plans table
       const { error } = await supabase
         .from("saved_plans")
         .delete()
