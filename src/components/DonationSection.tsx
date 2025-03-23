@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -31,41 +30,22 @@ const DonationSection = () => {
       
       console.log("Starting donation process with amount:", selectedAmount);
       
-      // Create a checkout session using our Supabase Edge Function with direct fetch
-      // This avoids authentication issues with the Edge Function
-      const response = await fetch(
-        'https://shpxzvlqaykbsprgzbbe.supabase.co/functions/v1/create-checkout-session',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY || ''}`,
-          },
-          body: JSON.stringify({
-            amount: selectedAmount,
-            currency: 'brl',
-            successUrl: `${window.location.origin}?donation=success`,
-            cancelUrl: `${window.location.origin}?donation=canceled`,
-            userId: user?.id,
-          }),
+      // Use supabase.functions.invoke() which handles authentication automatically
+      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+        body: {
+          amount: selectedAmount,
+          currency: 'brl',
+          successUrl: `${window.location.origin}?donation=success`,
+          cancelUrl: `${window.location.origin}?donation=canceled`,
+          userId: user?.id,
         }
-      );
+      });
       
-      console.log("Response status:", response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Error response:", errorText);
-        let errorData;
-        try {
-          errorData = JSON.parse(errorText);
-        } catch (e) {
-          errorData = { error: 'Unknown error occurred' };
-        }
-        throw new Error(errorData.error || 'Failed to create checkout session');
+      if (error) {
+        console.error("Edge function error:", error);
+        throw new Error(error.message || 'Failed to create checkout session');
       }
       
-      const data = await response.json();
       console.log("Response data:", data);
       
       if (!data.sessionId) {
