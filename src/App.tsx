@@ -18,6 +18,7 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/saved-plans" element={<SavedPlans />} />
+            <Route path="/plan/:id" element={<SavedPlans />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
