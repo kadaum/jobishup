@@ -1,4 +1,3 @@
-
 export const translations = {
   "app.title": "Interview Prep",
   "app.subtitle": "Master your job interviews with a personalized plan",
@@ -32,7 +31,8 @@ export const translations = {
   "form.practicePointsPlaceholder": "E.g., I want to work on technical explanations",
   "form.personalContext": "Personal Context (optional)",
   "form.personalContextPlaceholder": "E.g., I am changing careers",
-  "form.submit": "Generate Interview Plan",
+  "form.generate": "Generate Interview Plan",
+  "form.generating": "Generating your plan...",
   "form.optional": "(optional)",
   "loading.title": "Creating your plan...",
   "loading.subtitle": "This may take a few seconds",

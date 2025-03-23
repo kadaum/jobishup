@@ -1,4 +1,3 @@
-
 export const translations = {
   "app.title": "Interview Prep",
   "app.subtitle": "Domina tus entrevistas de trabajo con un plan personalizado",
@@ -70,5 +69,7 @@ export const translations = {
   "savedPlans.delete": "Eliminar",
   "savedPlans.deleted": "Plan eliminado con éxito",
   "savedPlans.errorFetching": "Error al cargar planes",
-  "savedPlans.errorDeleting": "Error al eliminar plan"
+  "savedPlans.errorDeleting": "Error al eliminar plan",
+  "form.generate": "Generar Plan de Entrevista",
+  "form.generating": "Generando tu plan...",
 };

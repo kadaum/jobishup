@@ -32,6 +32,8 @@ export const translations = {
   "form.practicePointsPlaceholder": "Ex: Quero trabalhar em explicações técnicas",
   "form.personalContext": "Contexto pessoal (opcional)",
   "form.personalContextPlaceholder": "Ex: Estou mudando de carreira",
+  "form.generate": "Gerar Plano de Entrevista",
+  "form.generating": "Gerando seu plano...",
   "form.submit": "Gerar Plano de Entrevista",
   "form.optional": "(opcional)",
   "loading.title": "Criando seu plano...",
