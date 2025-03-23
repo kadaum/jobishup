@@ -31,22 +31,28 @@ const DonationSection = () => {
       
       console.log("Starting donation process with amount:", selectedAmount);
       
-      // Use supabase.functions.invoke() which handles authentication automatically
-      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
-        body: {
+      // Direct fetch to the edge function, which now doesn't require authentication
+      const response = await fetch(`${process.env.REACT_APP_SUPABASE_URL || 'https://shpxzvlqaykbsprgzbbe.supabase.co'}/functions/v1/create-checkout-session`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           amount: selectedAmount,
           currency: 'brl',
           successUrl: `${window.location.origin}?donation=success`,
           cancelUrl: `${window.location.origin}?donation=canceled`,
-          userId: user?.id,
-        }
+          userId: user?.id, // This is optional now
+        }),
       });
       
-      if (error) {
-        console.error("Edge function error:", error);
-        throw new Error(error.message || 'Failed to create checkout session');
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Edge function error response:", response.status, errorData);
+        throw new Error(errorData.message || `Error: ${response.status}`);
       }
       
+      const data = await response.json();
       console.log("Response data:", data);
       
       if (!data.sessionId) {

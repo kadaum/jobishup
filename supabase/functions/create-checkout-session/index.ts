@@ -68,7 +68,7 @@ serve(async (req) => {
         success_url: successUrl,
         cancel_url: cancelUrl,
         metadata: {
-          userId,
+          userId: userId || 'anonymous',
         },
       });
       
@@ -87,25 +87,29 @@ serve(async (req) => {
       );
     }
 
-    // Store donation in database
-    try {
-      const { error: insertError } = await supabaseClient.from("donations").insert({
-        user_id: userId || null,
-        amount,
-        currency: currency || "brl",
-        payment_intent_id: session.payment_intent as string,
-        status: "pending",
-      });
+    // Store donation in database if userId is provided
+    if (userId) {
+      try {
+        const { error: insertError } = await supabaseClient.from("donations").insert({
+          user_id: userId,
+          amount,
+          currency: currency || "brl",
+          payment_intent_id: session.payment_intent as string,
+          status: "pending",
+        });
 
-      if (insertError) {
-        console.error("Error inserting donation record:", insertError);
+        if (insertError) {
+          console.error("Error inserting donation record:", insertError);
+          // Continue even if database insert fails, as the payment can still be processed
+        } else {
+          console.log("Donation record inserted successfully");
+        }
+      } catch (dbError) {
+        console.error("Database error:", dbError);
         // Continue even if database insert fails, as the payment can still be processed
-      } else {
-        console.log("Donation record inserted successfully");
       }
-    } catch (dbError) {
-      console.error("Database error:", dbError);
-      // Continue even if database insert fails, as the payment can still be processed
+    } else {
+      console.log("No user ID provided, skipping database record");
     }
 
     // Return the session ID
