@@ -26,10 +26,17 @@ export const savePlan = async (planData: {
   content: any;
   raw_text?: string;
 }): Promise<void> => {
+  // Get the current user
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    throw new Error('No authenticated user found');
+  }
+
   // Add user_id to the plan data
   const userData = { 
     ...planData, 
-    user_id: supabase.auth.getUser().then(({ data }) => data.user?.id)
+    user_id: user.id 
   };
   
   const { error } = await supabase

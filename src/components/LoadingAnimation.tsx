@@ -61,7 +61,7 @@ const LoadingAnimation = () => {
         <h3 className="text-xl font-medium text-center mb-3">{t('loading.title')}</h3>
         
         <p className="text-interview-dark-gray text-center max-w-md mb-6 text-sm md:text-base">
-          {t('loading.message')}
+          {t('loading.subtitle')}
         </p>
         
         <motion.div 
