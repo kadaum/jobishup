@@ -2,50 +2,47 @@
 import { supabase } from './client';
 import { SavedPlan } from '@/types';
 
-// This is a wrapper around the original supabase client that adds
-// support for the saved_plans table until the types are regenerated
-export const customSupabase = {
-  ...supabase,
-  from: (table: string) => {
-    if (table === 'saved_plans') {
-      // Add type casting for the saved_plans table
-      return supabase.from(table as any);
-    }
-    return supabase.from(table);
-  }
-};
+// Type assertions to fix TypeScript errors with Supabase tables
+// This is necessary because the Supabase types don't include our custom tables
 
-// Helper functions for saved plans
-export const getSavedPlans = async () => {
-  const { data, error } = await customSupabase
-    .from('saved_plans')
+export const getSavedPlans = async (): Promise<SavedPlan[]> => {
+  const { data, error } = await supabase
+    .from('saved_plans' as any)
     .select('*')
     .order('created_at', { ascending: false });
-  
-  if (error) throw error;
+
+  if (error) {
+    console.error('Error fetching saved plans:', error);
+    throw error;
+  }
+
   return data as unknown as SavedPlan[];
 };
 
-export const savePlan = async (plan: {
+export const savePlan = async (planData: {
   job_title: string;
   company_name: string;
   content: any;
   raw_text?: string;
-}) => {
-  const { error } = await customSupabase
-    .from('saved_plans')
-    .insert(plan as any);
-  
-  if (error) throw error;
-  return true;
+}): Promise<void> => {
+  const { error } = await (supabase
+    .from('saved_plans' as any)
+    .insert(planData as any));
+
+  if (error) {
+    console.error('Error saving plan:', error);
+    throw error;
+  }
 };
 
-export const deleteSavedPlan = async (id: string) => {
-  const { error } = await customSupabase
-    .from('saved_plans')
+export const deleteSavedPlan = async (id: string): Promise<void> => {
+  const { error } = await supabase
+    .from('saved_plans' as any)
     .delete()
     .eq('id', id);
-  
-  if (error) throw error;
-  return true;
+
+  if (error) {
+    console.error('Error deleting plan:', error);
+    throw error;
+  }
 };
