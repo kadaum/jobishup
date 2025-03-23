@@ -59,7 +59,7 @@ serve(async (req) => {
                 name: "Donation to Interview Prep",
                 description: "Apoio ao projeto Interview Prep",
               },
-              unit_amount: amount * 100, // Stripe expects amounts in cents
+              unit_amount: Math.round(amount * 100), // Ensure integer conversion for Stripe
             },
             quantity: 1,
           },
