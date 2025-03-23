@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -53,18 +54,20 @@ const DonationSection = () => {
         throw new Error('Invalid response from server');
       }
       
-      // Redirect to Stripe Checkout
+      // Load Stripe afresh to ensure we have a valid instance
       const stripe = await stripePromise;
-      if (stripe) {
-        console.log("Redirecting to Stripe checkout with session ID:", data.sessionId);
-        const { error: stripeError } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-        
-        if (stripeError) {
-          console.error('Stripe redirect error:', stripeError);
-          throw new Error(stripeError.message || 'Error redirecting to checkout');
-        }
-      } else {
+      if (!stripe) {
         throw new Error('Failed to initialize Stripe');
+      }
+      
+      console.log("Redirecting to Stripe checkout with session ID:", data.sessionId);
+      const { error: stripeError } = await stripe.redirectToCheckout({ 
+        sessionId: data.sessionId 
+      });
+      
+      if (stripeError) {
+        console.error('Stripe redirect error:', stripeError);
+        throw new Error(stripeError.message || 'Error redirecting to checkout');
       }
     } catch (error) {
       console.error('Donation error:', error);

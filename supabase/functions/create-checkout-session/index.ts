@@ -20,7 +20,14 @@ serve(async (req) => {
   try {
     console.log("Create checkout session function called");
     
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
+    // Get Stripe secret key from environment variables
+    const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeSecretKey) {
+      console.error("Missing STRIPE_SECRET_KEY environment variable");
+      throw new Error("Server configuration error: missing Stripe key");
+    }
+
+    const stripe = new Stripe(stripeSecretKey, {
       apiVersion: "2023-10-16",
     });
 
@@ -30,7 +37,8 @@ serve(async (req) => {
     );
 
     // Get the request payload
-    const { amount, currency, successUrl, cancelUrl, userId } = await req.json();
+    const requestData = await req.json();
+    const { amount, currency, successUrl, cancelUrl, userId } = requestData;
     
     console.log("Received request data:", { amount, currency, userId, successUrl, cancelUrl });
     
@@ -38,49 +46,74 @@ serve(async (req) => {
       throw new Error("Invalid donation amount");
     }
     
-    // Create a checkout session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price_data: {
-            currency: currency || "brl",
-            product_data: {
-              name: "Donation to Interview Prep",
+    // Create a checkout session with detailed error handling
+    let session;
+    try {
+      session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price_data: {
+              currency: currency || "brl",
+              product_data: {
+                name: "Donation to Interview Prep",
+                description: "Apoio ao projeto Interview Prep",
+              },
+              unit_amount: amount * 100, // Stripe expects amounts in cents
             },
-            unit_amount: amount * 100, // Stripe expects amounts in cents
+            quantity: 1,
           },
-          quantity: 1,
+        ],
+        mode: "payment",
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        metadata: {
+          userId,
         },
-      ],
-      mode: "payment",
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      metadata: {
-        userId,
-      },
-    });
-
-    console.log("Stripe session created:", session.id);
+      });
+      
+      console.log("Stripe session created successfully:", session.id);
+    } catch (stripeError) {
+      console.error("Stripe session creation error:", stripeError);
+      return new Response(
+        JSON.stringify({ 
+          error: "Stripe error", 
+          message: stripeError.message 
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        }
+      );
+    }
 
     // Store donation in database
-    const { error: insertError } = await supabaseClient.from("donations").insert({
-      user_id: userId || null,
-      amount,
-      currency: currency || "brl",
-      payment_intent_id: session.payment_intent as string,
-      status: "pending",
-    });
+    try {
+      const { error: insertError } = await supabaseClient.from("donations").insert({
+        user_id: userId || null,
+        amount,
+        currency: currency || "brl",
+        payment_intent_id: session.payment_intent as string,
+        status: "pending",
+      });
 
-    if (insertError) {
-      console.error("Error inserting donation record:", insertError);
-    } else {
-      console.log("Donation record inserted successfully");
+      if (insertError) {
+        console.error("Error inserting donation record:", insertError);
+        // Continue even if database insert fails, as the payment can still be processed
+      } else {
+        console.log("Donation record inserted successfully");
+      }
+    } catch (dbError) {
+      console.error("Database error:", dbError);
+      // Continue even if database insert fails, as the payment can still be processed
     }
 
     // Return the session ID
     return new Response(
-      JSON.stringify({ sessionId: session.id }),
+      JSON.stringify({ 
+        sessionId: session.id,
+        status: "success" 
+      }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -89,7 +122,10 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error creating checkout session:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: "Failed to create checkout session", 
+        message: error.message 
+      }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
