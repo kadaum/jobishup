@@ -109,8 +109,11 @@ const LanguageContext = createContext<LanguageContextType>({
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   // Get the preferred language from localStorage or default to 'pt'
   const [language, setLanguage] = useState(() => {
-    const savedLanguage = localStorage.getItem('preferred-language');
-    return savedLanguage || 'pt';
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('preferred-language');
+      return savedLanguage || 'pt';
+    }
+    return 'pt';
   });
 
   const t = (key: string): string => {
@@ -120,10 +123,15 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // Update localStorage when language changes
-    localStorage.setItem('preferred-language', language);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('preferred-language', language);
+    }
     
     // Force re-render of components when language changes
     document.documentElement.setAttribute('lang', language);
+    
+    // Trigger an event that can be listened to by components
+    window.dispatchEvent(new Event('languagechange'));
   }, [language]);
 
   return (

@@ -20,7 +20,13 @@ const Index = () => {
       setIsLoading(true);
       setPlan(null);
       
-      const generatedPlan = await generateInterviewPlan(data);
+      // Ensure the selected language is passed to the API
+      const dataWithLanguage = {
+        ...data,
+        selectedLanguage: language
+      };
+      
+      const generatedPlan = await generateInterviewPlan(dataWithLanguage);
       
       setPlan(generatedPlan);
       toast.success(t('plan.ready'));
