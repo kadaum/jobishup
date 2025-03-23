@@ -8,8 +8,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-// Initialize Stripe with your publishable key
-const stripePromise = loadStripe("pk_test_51Oi6d1Kt8rM5DFSYnFoeBHLIdBMtYpCmXhxA9FWu0vQPvyQlwAF1qU9CBRC7pPpF0eVD0jQCXeLdkFDjEEU0HKpz00VR9e1tPL");
+// Initialize Stripe with your live publishable key
+const stripePromise = loadStripe("pk_live_51Oi6d1Kt8rM5DFSYajJTmkXuVGJDCaIkLmXkHZh0Hj8XaGVN37tDYrqCuGKF5NiWLhI1XwYdYUAx1IW0rl4DwpSa00g3pVoNUb");
 
 // Predefined donation amounts
 const DONATION_AMOUNTS = [
@@ -32,7 +32,7 @@ const DonationSection = () => {
       console.log("Starting donation process with amount:", selectedAmount);
       
       // Direct fetch to the edge function, which now doesn't require authentication
-      const response = await fetch(`${process.env.REACT_APP_SUPABASE_URL || 'https://shpxzvlqaykbsprgzbbe.supabase.co'}/functions/v1/create-checkout-session`, {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL || 'https://shpxzvlqaykbsprgzbbe.supabase.co'}/functions/v1/create-checkout-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
