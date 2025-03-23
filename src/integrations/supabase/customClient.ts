@@ -7,7 +7,7 @@ import { SavedPlan } from '@/types';
 
 export const getSavedPlans = async (): Promise<SavedPlan[]> => {
   const { data, error } = await supabase
-    .from('saved_plans' as any)
+    .from('saved_plans')
     .select('*')
     .order('created_at', { ascending: false });
 
@@ -25,9 +25,9 @@ export const savePlan = async (planData: {
   content: any;
   raw_text?: string;
 }): Promise<void> => {
-  const { error } = await (supabase
-    .from('saved_plans' as any)
-    .insert(planData as any));
+  const { error } = await supabase
+    .from('saved_plans')
+    .insert(planData);
 
   if (error) {
     console.error('Error saving plan:', error);
@@ -37,7 +37,7 @@ export const savePlan = async (planData: {
 
 export const deleteSavedPlan = async (id: string): Promise<void> => {
   const { error } = await supabase
-    .from('saved_plans' as any)
+    .from('saved_plans')
     .delete()
     .eq('id', id);
 
