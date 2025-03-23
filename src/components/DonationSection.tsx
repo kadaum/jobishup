@@ -8,7 +8,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-// Initialize Stripe with your live publishable key
+// Initialize Stripe with the live publishable key
 const stripePromise = loadStripe("pk_live_fol2YaEUyWnM4aafaFTdMQms");
 
 // Predefined donation amounts
