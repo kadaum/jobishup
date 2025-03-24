@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Download, Share2 } from "lucide-react";
+import { Download, Share2, Linkedin, Twitter, Facebook, Instagram, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { InterviewPlan } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
@@ -17,6 +17,17 @@ interface ExportOptionsProps {
 const ExportOptions = ({ plan, printRef }: ExportOptionsProps) => {
   const { t, language } = useLanguage();
   const [pdfGenerating, setPdfGenerating] = useState(false);
+  const [showSocialOptions, setShowSocialOptions] = useState(false);
+  
+  // Get the current website URL for sharing
+  const websiteUrl = window.location.origin;
+  const shareTitle = language === 'en' ? 'Check out this Interview Preparation Plan' :
+                  language === 'es' ? 'Mira este Plan de Preparación para Entrevista' :
+                  'Confira este Plano de Preparação para Entrevista';
+  const shareText = language === 'en' ? 'I created this interview preparation plan with Interview Prep. Create yours at: ' :
+                 language === 'es' ? 'Creé este plan de preparación para entrevista con Interview Prep. Crea el tuyo en: ' :
+                 'Criei este plano de preparação para entrevista com Interview Prep. Crie o seu em: ';
+  const shareUrl = `${websiteUrl}?utm_source=share`;
 
   const handleDownloadPDF = async () => {
     if (!printRef.current) return;
@@ -74,18 +85,17 @@ const ExportOptions = ({ plan, printRef }: ExportOptionsProps) => {
     }
   };
 
-  const handleSharePlan = async () => {
+  const handleGenericShare = async () => {
     try {
       // Create text content for sharing
-      let textContent = plan.rawText;
+      let textContent = `${shareText}${shareUrl}`;
       
       // Check if navigator.share is available (mobile devices)
       if (navigator.share) {
         await navigator.share({
-          title: language === 'en' ? 'My Interview Preparation Plan' :
-                language === 'es' ? 'Mi Plan de Preparación para Entrevista' :
-                'Meu Plano de Preparação para Entrevista',
-          text: textContent
+          title: shareTitle,
+          text: textContent,
+          url: shareUrl
         });
         
         toast.success(
@@ -98,10 +108,13 @@ const ExportOptions = ({ plan, printRef }: ExportOptionsProps) => {
         await navigator.clipboard.writeText(textContent);
         
         toast.success(
-          language === 'en' ? 'Plan copied to clipboard!' : 
-          language === 'es' ? '¡Plan copiado al portapapeles!' : 
-          'Plano copiado para a área de transferência!'
+          language === 'en' ? 'Link copied to clipboard!' : 
+          language === 'es' ? '¡Enlace copiado al portapapeles!' : 
+          'Link copiado para a área de transferência!'
         );
+        
+        // Show social options
+        setShowSocialOptions(true);
       }
     } catch (error) {
       console.error('Error sharing plan:', error);
@@ -111,6 +124,27 @@ const ExportOptions = ({ plan, printRef }: ExportOptionsProps) => {
         'Erro ao compartilhar o plano'
       );
     }
+  };
+  
+  // Social media sharing functions
+  const shareOnLinkedIn = () => {
+    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+    window.open(linkedInShareUrl, '_blank');
+  };
+  
+  const shareOnTwitter = () => {
+    const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(shareUrl)}`;
+    window.open(twitterShareUrl, '_blank');
+  };
+  
+  const shareOnFacebook = () => {
+    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    window.open(facebookShareUrl, '_blank');
+  };
+  
+  const shareOnWhatsApp = () => {
+    const whatsAppShareUrl = `https://wa.me/?text=${encodeURIComponent(`${shareTitle} ${shareUrl}`)}`;
+    window.open(whatsAppShareUrl, '_blank');
   };
 
   // Animation variant
@@ -137,13 +171,66 @@ const ExportOptions = ({ plan, printRef }: ExportOptionsProps) => {
               t('downloadPDF')}
           </Button>
           <Button 
-            onClick={handleSharePlan}
+            onClick={handleGenericShare}
             className="flex-1 bg-interview-purple hover:bg-interview-purple/90 text-white button-hover"
           >
             <Share2 className="mr-2 h-4 w-4" />
             {t('sharePlan')}
           </Button>
         </div>
+        
+        {showSocialOptions && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            transition={{ duration: 0.3 }}
+            className="mt-4"
+          >
+            <p className="text-sm mb-3">
+              {language === 'en' ? 'Share on:' : 
+               language === 'es' ? 'Compartir en:' : 
+               'Compartilhar em:'}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Button 
+                onClick={shareOnLinkedIn} 
+                variant="outline"
+                className="flex items-center gap-2 hover:bg-blue-100"
+                size="sm"
+              >
+                <Linkedin className="h-4 w-4 text-blue-600" />
+                LinkedIn
+              </Button>
+              <Button 
+                onClick={shareOnTwitter} 
+                variant="outline"
+                className="flex items-center gap-2 hover:bg-blue-100"
+                size="sm"
+              >
+                <Twitter className="h-4 w-4 text-blue-400" />
+                Twitter
+              </Button>
+              <Button 
+                onClick={shareOnFacebook} 
+                variant="outline"
+                className="flex items-center gap-2 hover:bg-blue-100"
+                size="sm"
+              >
+                <Facebook className="h-4 w-4 text-blue-600" />
+                Facebook
+              </Button>
+              <Button 
+                onClick={shareOnWhatsApp} 
+                variant="outline"
+                className="flex items-center gap-2 hover:bg-green-100"
+                size="sm"
+              >
+                <ArrowRight className="h-4 w-4 text-green-500" />
+                WhatsApp
+              </Button>
+            </div>
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );

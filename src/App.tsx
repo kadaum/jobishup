@@ -5,6 +5,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import SavedPlans from "./pages/SavedPlans";
+import PlanDetails from "./pages/PlanDetails";
 import { LanguageProvider } from "./context/LanguageContext";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -18,7 +19,7 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/saved-plans" element={<SavedPlans />} />
-            <Route path="/plan/:id" element={<SavedPlans />} />
+            <Route path="/plan/:id" element={<PlanDetails />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
