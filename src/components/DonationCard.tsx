@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Heart, Coffee, ArrowRight } from "lucide-react";
@@ -11,15 +12,39 @@ const donationAmounts = [5, 10, 25, 50];
 const DonationCard = () => {
   const [selectedAmount, setSelectedAmount] = useState<number>(10);
   const [isLoading, setIsLoading] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  // Function to format currency based on current language
+  const formatCurrency = (amount: number): string => {
+    const currencyMap: Record<string, { currency: string, locale: string }> = {
+      en: { currency: 'USD', locale: 'en-US' },
+      pt: { currency: 'BRL', locale: 'pt-BR' },
+      es: { currency: 'EUR', locale: 'es-ES' }
+    };
+    
+    const { currency, locale } = currencyMap[language] || { currency: 'BRL', locale: 'pt-BR' };
+    
+    return new Intl.NumberFormat(locale, { 
+      style: 'currency', 
+      currency 
+    }).format(amount);
+  };
 
   const handleDonation = async () => {
     try {
       setIsLoading(true);
-      console.log(`Processing donation of $${selectedAmount}`);
+      console.log(`Processing donation of ${formatCurrency(selectedAmount)}`);
       
       // Convert dollars to cents for Stripe
       const amountInCents = selectedAmount * 100;
+      
+      // Get currency code based on language
+      const currencyMap: Record<string, string> = {
+        en: 'usd',
+        pt: 'brl',
+        es: 'eur'
+      };
+      const currency = currencyMap[language] || 'brl';
       
       // Call our Supabase Edge Function
       const response = await fetch(
@@ -31,7 +56,7 @@ const DonationCard = () => {
           },
           body: JSON.stringify({
             amount: amountInCents,
-            currency: "brl"
+            currency
           }),
         }
       );
@@ -98,7 +123,7 @@ const DonationCard = () => {
                     : "bg-white text-blue-500 border border-blue-200"
                 } rounded-md py-2 px-3 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300`}
               >
-                ${amount}
+                {formatCurrency(amount)}
               </motion.button>
             ))}
           </div>
