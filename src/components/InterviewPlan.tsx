@@ -28,6 +28,8 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
     plan.process,
     ...(plan.preparationSchedule ? [plan.preparationSchedule] : []),
     plan.questions,
+    ...(plan.industrySections || []),
+    ...(plan.interviewTypeSections || []),
     plan.questionsToAsk,
     plan.studyMaterials,
     plan.finalTips

@@ -8,6 +8,7 @@ export interface FormData {
   interviewDate?: string;
   interviewType?: "technical" | "behavioral" | "strategic" | "cultural";
   jobLevel?: "junior" | "mid" | "senior" | "leadership";
+  industry?: "tech" | "finance" | "healthcare" | "retail" | "education" | "manufacturing" | "other";
   personalContext?: string;
   selectedLanguage?: string;
 }
@@ -18,6 +19,23 @@ export interface Section {
   content: string;
 }
 
+export interface IndustrySections {
+  tech?: Section[];
+  finance?: Section[];
+  healthcare?: Section[];
+  retail?: Section[];
+  education?: Section[];
+  manufacturing?: Section[];
+  other?: Section[];
+}
+
+export interface InterviewTypeSections {
+  technical?: Section[];
+  behavioral?: Section[];
+  strategic?: Section[];
+  cultural?: Section[];
+}
+
 export interface InterviewPlan {
   process: Section;
   questions: Section;
@@ -25,6 +43,8 @@ export interface InterviewPlan {
   studyMaterials: Section;
   finalTips: Section;
   preparationSchedule?: Section;
+  industrySections?: Section[];
+  interviewTypeSections?: Section[];
   rawText?: string;
 }
 
