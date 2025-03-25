@@ -1,9 +1,7 @@
 
 import { FormData, InterviewPlan } from "@/types";
 import { createPrompt } from "./promptUtils";
-import { generateMockResponse } from "./planGenerator";
-import { generateIndustrySections } from "./mockResponses/industrySections";
-import { generateInterviewTypeSections } from "./mockResponses/interviewTypeSections";
+import { generateMockResponse } from "./planGeneration";
 
 // This is a mock function that simulates a ChatGPT API call
 // In a real implementation, this would call the OpenAI API
@@ -18,16 +16,6 @@ export const generateInterviewPlan = async (formData: FormData): Promise<Intervi
   // In a real implementation, this would be replaced with an actual API call
   // For now, we return a mock response
   const mockResponse = generateMockResponse(formData);
-  
-  // Add industry-specific sections if an industry is selected
-  if (formData.industry && formData.industry !== 'other') {
-    mockResponse.industrySections = generateIndustrySections(formData, formData.selectedLanguage || 'en');
-  }
-  
-  // Add interview type-specific sections if an interview type is selected
-  if (formData.interviewType) {
-    mockResponse.interviewTypeSections = generateInterviewTypeSections(formData, formData.selectedLanguage || 'en');
-  }
   
   return mockResponse;
 };
