@@ -8,8 +8,6 @@ export interface FormData {
   interviewDate?: string;
   interviewType?: "technical" | "behavioral" | "strategic" | "cultural";
   jobLevel?: "junior" | "mid" | "senior" | "leadership";
-  interviewLanguage?: "portuguese" | "english" | "spanish";
-  practicePoints?: string;
   personalContext?: string;
   selectedLanguage?: string;
 }
@@ -26,6 +24,7 @@ export interface InterviewPlan {
   questionsToAsk: Section;
   studyMaterials: Section;
   finalTips: Section;
+  preparationSchedule?: Section;
   rawText?: string;
 }
 

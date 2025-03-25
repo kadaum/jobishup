@@ -1,4 +1,6 @@
+
 import { FormData, InterviewPlan } from "@/types";
+import { format, differenceInDays } from "date-fns";
 
 // This is a mock function that simulates a ChatGPT API call
 // In a real implementation, this would call the OpenAI API
@@ -19,7 +21,7 @@ export const generateInterviewPlan = async (formData: FormData): Promise<Intervi
 
 const createPrompt = (formData: FormData): string => {
   // Determine the language for the prompt
-  const outputLanguage = formData.selectedLanguage || formData.interviewLanguage || 'pt';
+  const outputLanguage = formData.selectedLanguage || 'pt';
   let promptLanguage;
   
   switch(outputLanguage) {
@@ -150,47 +152,6 @@ const createPrompt = (formData: FormData): string => {
       prompt += ` El nivel del puesto es: ${jobLevelTranslated}.`;
     } else {
       prompt += ` O nível da vaga é: ${jobLevelTranslated}.`;
-    }
-  }
-  
-  if (formData.interviewLanguage) {
-    const languageMap: Record<string, Record<string, string>> = {
-      en: {
-        portuguese: "Portuguese",
-        english: "English",
-        spanish: "Spanish"
-      },
-      es: {
-        portuguese: "portugués",
-        english: "inglés",
-        spanish: "español"
-      },
-      pt: {
-        portuguese: "português",
-        english: "inglês",
-        spanish: "espanhol"
-      }
-    };
-    
-    const languageKey = outputLanguage === 'en' ? 'en' : outputLanguage === 'es' ? 'es' : 'pt';
-    const interviewLanguageTranslated = languageMap[languageKey][formData.interviewLanguage] || formData.interviewLanguage;
-    
-    if (outputLanguage === 'en') {
-      prompt += ` The interview will be in: ${interviewLanguageTranslated}.`;
-    } else if (outputLanguage === 'es') {
-      prompt += ` La entrevista será en: ${interviewLanguageTranslated}.`;
-    } else {
-      prompt += ` A entrevista será em: ${interviewLanguageTranslated}.`;
-    }
-  }
-  
-  if (formData.practicePoints) {
-    if (outputLanguage === 'en') {
-      prompt += ` The candidate wants to practice these points: ${formData.practicePoints}.`;
-    } else if (outputLanguage === 'es') {
-      prompt += ` El candidato quiere practicar estos puntos: ${formData.practicePoints}.`;
-    } else {
-      prompt += ` O candidato quer treinar estes pontos: ${formData.practicePoints}.`;
     }
   }
   
@@ -639,6 +600,128 @@ Recursos Recomendados:
 - Cuide de si mesmo no dia anterior - durma o suficiente, alimente-se bem e reserve um tempo para relaxar. Seu estado mental impacta significativamente seu desempenho.`;
   }
 
+  // Generate preparation schedule if interview date is provided
+  let preparationScheduleContent = "";
+  let preparationScheduleTitle = "";
+  let preparationScheduleEmoji = "📅";
+  
+  if (formData.interviewDate) {
+    const currentDate = new Date();
+    const interviewDate = new Date(formData.interviewDate);
+    const daysUntilInterview = differenceInDays(interviewDate, currentDate);
+    
+    // Format the interview date
+    let interviewDateFormatted = "";
+    try {
+      interviewDateFormatted = format(interviewDate, 'PPP');
+    } catch (error) {
+      interviewDateFormatted = formData.interviewDate;
+    }
+    
+    if (isEnglish) {
+      preparationScheduleTitle = "Preparation Schedule";
+      let scheduleText = `Your interview is on ${interviewDateFormatted}. Here's a recommended preparation schedule:\n\n`;
+      
+      if (daysUntilInterview <= 1) {
+        scheduleText += `**Last Day Before Interview:**\n
+- Review your notes and research about ${formData.companyName}
+- Practice answering your prepared questions out loud
+- Prepare your outfit and any materials you'll bring
+- Get a good night's sleep (8+ hours)
+- Plan your route or setup your virtual environment
+- Avoid learning new content that could confuse you`;
+      } else if (daysUntilInterview <= 3) {
+        scheduleText += `**${daysUntilInterview} Days Until Interview:**\n
+- **Days ${daysUntilInterview}-2:** Focus on company research and practice answers to common questions
+- **Day Before:** Review your notes, prepare your outfit, and test your technology if it's a virtual interview
+- **Interview Day:** Wake up early, review your key talking points, and arrive 15 minutes early`;
+      } else if (daysUntilInterview <= 7) {
+        scheduleText += `**${daysUntilInterview} Days Until Interview:**\n
+- **Days ${daysUntilInterview}-5:** Research company thoroughly and prepare specific examples from your experience
+- **Days 4-2:** Practice mock interviews with a friend or mentor, focusing on difficult questions
+- **Day Before:** Light review, prepare your outfit, and get a good night's sleep
+- **Interview Day:** Wake up early, stay calm, and be confident in your preparation`;
+      } else {
+        scheduleText += `**${daysUntilInterview} Days Until Interview:**\n
+- **Weeks 1-2:** Research the company's culture, products, and recent news
+- **Week 3:** Prepare specific examples from your experience that match the job requirements
+- **Final Week:** Conduct mock interviews and refine your answers
+- **Day Before:** Light review, prepare your outfit, and get a good night's sleep
+- **Interview Day:** Wake up early, review key talking points, and arrive with time to spare`;
+      }
+      
+      preparationScheduleContent = scheduleText;
+      
+    } else if (isSpanish) {
+      preparationScheduleTitle = "Calendario de Preparación";
+      let scheduleText = `Tu entrevista es el ${interviewDateFormatted}. Aquí tienes un calendario de preparación recomendado:\n\n`;
+      
+      if (daysUntilInterview <= 1) {
+        scheduleText += `**Último Día Antes de la Entrevista:**\n
+- Revisa tus notas e investigación sobre ${formData.companyName}
+- Practica responder tus preguntas preparadas en voz alta
+- Prepara tu vestimenta y cualquier material que llevarás
+- Duerme bien (8+ horas)
+- Planifica tu ruta o configura tu entorno virtual
+- Evita aprender contenido nuevo que pueda confundirte`;
+      } else if (daysUntilInterview <= 3) {
+        scheduleText += `**${daysUntilInterview} Días Hasta la Entrevista:**\n
+- **Días ${daysUntilInterview}-2:** Concéntrate en la investigación de la empresa y practica respuestas a preguntas comunes
+- **Día Anterior:** Revisa tus notas, prepara tu vestimenta y prueba tu tecnología si es una entrevista virtual
+- **Día de la Entrevista:** Despierta temprano, repasa tus puntos clave y llega 15 minutos antes`;
+      } else if (daysUntilInterview <= 7) {
+        scheduleText += `**${daysUntilInterview} Días Hasta la Entrevista:**\n
+- **Días ${daysUntilInterview}-5:** Investiga la empresa a fondo y prepara ejemplos específicos de tu experiencia
+- **Días 4-2:** Practica entrevistas simuladas con un amigo o mentor, centrándote en preguntas difíciles
+- **Día Anterior:** Revisión ligera, prepara tu vestimenta y duerme bien
+- **Día de la Entrevista:** Despierta temprano, mantén la calma y confía en tu preparación`;
+      } else {
+        scheduleText += `**${daysUntilInterview} Días Hasta la Entrevista:**\n
+- **Semanas 1-2:** Investiga la cultura, productos y noticias recientes de la empresa
+- **Semana 3:** Prepara ejemplos específicos de tu experiencia que coincidan con los requisitos del trabajo
+- **Última Semana:** Realiza entrevistas simuladas y refina tus respuestas
+- **Día Anterior:** Revisión ligera, prepara tu vestimenta y duerme bien
+- **Día de la Entrevista:** Despierta temprano, repasa puntos clave y llega con tiempo de sobra`;
+      }
+      
+      preparationScheduleContent = scheduleText;
+      
+    } else {
+      preparationScheduleTitle = "Cronograma de Preparação";
+      let scheduleText = `Sua entrevista é em ${interviewDateFormatted}. Aqui está um cronograma de preparação recomendado:\n\n`;
+      
+      if (daysUntilInterview <= 1) {
+        scheduleText += `**Último Dia Antes da Entrevista:**\n
+- Revise suas anotações e pesquisas sobre a ${formData.companyName}
+- Pratique suas respostas preparadas em voz alta
+- Prepare sua roupa e qualquer material que você levará
+- Durma bem (8+ horas)
+- Planeje sua rota ou configure seu ambiente virtual
+- Evite aprender conteúdo novo que possa confundi-lo`;
+      } else if (daysUntilInterview <= 3) {
+        scheduleText += `**${daysUntilInterview} Dias Até a Entrevista:**\n
+- **Dias ${daysUntilInterview}-2:** Concentre-se na pesquisa da empresa e pratique respostas para perguntas comuns
+- **Dia Anterior:** Revise suas anotações, prepare sua roupa e teste sua tecnologia se for uma entrevista virtual
+- **Dia da Entrevista:** Acorde cedo, revise seus pontos-chave e chegue 15 minutos antes`;
+      } else if (daysUntilInterview <= 7) {
+        scheduleText += `**${daysUntilInterview} Dias Até a Entrevista:**\n
+- **Dias ${daysUntilInterview}-5:** Pesquise a empresa detalhadamente e prepare exemplos específicos da sua experiência
+- **Dias 4-2:** Pratique entrevistas simuladas com um amigo ou mentor, focando em perguntas difíceis
+- **Dia Anterior:** Revisão leve, prepare sua roupa e durma bem
+- **Dia da Entrevista:** Acorde cedo, mantenha a calma e confie na sua preparação`;
+      } else {
+        scheduleText += `**${daysUntilInterview} Dias Até a Entrevista:**\n
+- **Semanas 1-2:** Pesquise a cultura, produtos e notícias recentes da empresa
+- **Semana 3:** Prepare exemplos específicos da sua experiência que correspondam aos requisitos da vaga
+- **Última Semana:** Realize entrevistas simuladas e refine suas respostas
+- **Dia Anterior:** Revisão leve, prepare sua roupa e durma bem
+- **Dia da Entrevista:** Acorde cedo, revise pontos-chave e chegue com tempo de sobra`;
+      }
+      
+      preparationScheduleContent = scheduleText;
+    }
+  }
+
   // Build the full mock response
   const questionsContent = isTech || position.includes('dev') ? techQuestionsContent : managementQuestionsContent;
 
@@ -678,43 +761,59 @@ Recursos Recomendados:
     processSectionTitle = "1. PROCESSO SELETIVO ESPERADO";
   }
 
+  let preparationScheduleSectionTitle = "";
+  if (formData.interviewDate) {
+    if (isEnglish) {
+      preparationScheduleSectionTitle = "2. PREPARATION SCHEDULE";
+    } else if (isSpanish) {
+      preparationScheduleSectionTitle = "2. CALENDARIO DE PREPARACIÓN";
+    } else {
+      preparationScheduleSectionTitle = "2. CRONOGRAMA DE PREPARAÇÃO";
+    }
+  }
+
   let questionsSectionTitle = "";
+  const questionSectionNumber = formData.interviewDate ? "3" : "2";
   if (isEnglish) {
-    questionsSectionTitle = "2. COMMON QUESTIONS AND HOW TO ANSWER";
+    questionsSectionTitle = `${questionSectionNumber}. COMMON QUESTIONS AND HOW TO ANSWER`;
   } else if (isSpanish) {
-    questionsSectionTitle = "2. PREGUNTAS COMUNES Y CÓMO RESPONDER";
+    questionsSectionTitle = `${questionSectionNumber}. PREGUNTAS COMUNES Y CÓMO RESPONDER`;
   } else {
-    questionsSectionTitle = "2. PERGUNTAS COMUNS E COMO RESPONDER";
+    questionsSectionTitle = `${questionSectionNumber}. PERGUNTAS COMUNS E COMO RESPONDER`;
   }
 
   let questionsToAskSectionTitle = "";
+  const questionsToAskSectionNumber = formData.interviewDate ? "4" : "3";
   if (isEnglish) {
-    questionsToAskSectionTitle = "3. QUESTIONS TO ASK THE INTERVIEWER";
+    questionsToAskSectionTitle = `${questionsToAskSectionNumber}. QUESTIONS TO ASK THE INTERVIEWER`;
   } else if (isSpanish) {
-    questionsToAskSectionTitle = "3. PREGUNTAS PARA HACER AL ENTREVISTADOR";
+    questionsToAskSectionTitle = `${questionsToAskSectionNumber}. PREGUNTAS PARA HACER AL ENTREVISTADOR`;
   } else {
-    questionsToAskSectionTitle = "3. PERGUNTAS PARA FAZER AO ENTREVISTADOR";
+    questionsToAskSectionTitle = `${questionsToAskSectionNumber}. PERGUNTAS PARA FAZER AO ENTREVISTADOR`;
   }
 
   let studyMaterialsSectionTitle = "";
+  const studyMaterialsSectionNumber = formData.interviewDate ? "5" : "4";
   if (isEnglish) {
-    studyMaterialsSectionTitle = "4. WHAT TO STUDY BEFORE THE INTERVIEW";
+    studyMaterialsSectionTitle = `${studyMaterialsSectionNumber}. WHAT TO STUDY BEFORE THE INTERVIEW`;
   } else if (isSpanish) {
-    studyMaterialsSectionTitle = "4. QUÉ ESTUDIAR ANTES DE LA ENTREVISTA";
+    studyMaterialsSectionTitle = `${studyMaterialsSectionNumber}. QUÉ ESTUDIAR ANTES DE LA ENTREVISTA`;
   } else {
-    studyMaterialsSectionTitle = "4. O QUE ESTUDAR ANTES DA ENTREVISTA";
+    studyMaterialsSectionTitle = `${studyMaterialsSectionNumber}. O QUE ESTUDAR ANTES DA ENTREVISTA`;
   }
 
   let finalTipsSectionTitle = "";
+  const finalTipsSectionNumber = formData.interviewDate ? "6" : "5";
   if (isEnglish) {
-    finalTipsSectionTitle = "5. FINAL PERSONALIZED TIPS";
+    finalTipsSectionTitle = `${finalTipsSectionNumber}. FINAL PERSONALIZED TIPS`;
   } else if (isSpanish) {
-    finalTipsSectionTitle = "5. CONSEJOS FINALES PERSONALIZADOS";
+    finalTipsSectionTitle = `${finalTipsSectionNumber}. CONSEJOS FINALES PERSONALIZADOS`;
   } else {
-    finalTipsSectionTitle = "5. DICAS FINAIS PERSONALIZADAS";
+    finalTipsSectionTitle = `${finalTipsSectionNumber}. DICAS FINAIS PERSONALIZADAS`;
   }
 
-  const rawText = `
+  // Build raw text
+  let rawText = `
 ${rawTextTitle}
 
 ${positionTitle} ${formData.jobTitle}
@@ -722,7 +821,18 @@ ${companyTitle} ${formData.companyName}
 
 ${processSectionTitle}
 ${processContent}
+`;
 
+  // Add preparation schedule section if interview date is provided
+  if (formData.interviewDate) {
+    rawText += `
+${preparationScheduleSectionTitle}
+${preparationScheduleContent}
+`;
+  }
+
+  // Add remaining sections
+  rawText += `
 ${questionsSectionTitle}
 ${questionsContent}
 
@@ -763,7 +873,8 @@ ${finalTipsContent}
     finalTipsSectionTitleShort = "Dicas finais personalizadas";
   }
 
-  return {
+  // Create the response object
+  const response: InterviewPlan = {
     process: {
       title: processSectionTitleShort,
       emoji: "📋",
@@ -791,4 +902,15 @@ ${finalTipsContent}
     },
     rawText
   };
+
+  // Add preparation schedule if interview date is provided
+  if (formData.interviewDate) {
+    response.preparationSchedule = {
+      title: preparationScheduleTitle,
+      emoji: preparationScheduleEmoji,
+      content: preparationScheduleContent
+    };
+  }
+
+  return response;
 };

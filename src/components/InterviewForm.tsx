@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -264,63 +265,6 @@ const InterviewForm = ({ onSubmit, isLoading }: InterviewFormProps) => {
                           </SelectItem>
                         </SelectContent>
                       </Select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <Label htmlFor="interviewLanguage" className="text-sm font-medium">
-                        {language === 'en' ? 'Interview language' : 
-                         language === 'es' ? 'Idioma de la entrevista' : 
-                         'Idioma da entrevista'}
-                      </Label>
-                      <Select 
-                        onValueChange={(value) => handleSelectChange("interviewLanguage", value)}
-                        value={formData.interviewLanguage}
-                      >
-                        <SelectTrigger className="border-interview-light-blue focus:border-interview-blue">
-                          <SelectValue placeholder={
-                            language === 'en' ? 'Select language' : 
-                            language === 'es' ? 'Seleccione idioma' : 
-                            'Selecione o idioma'
-                          } />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="portuguese">
-                            {language === 'en' ? 'Portuguese' : 
-                             language === 'es' ? 'Portugués' : 
-                             'Português'}
-                          </SelectItem>
-                          <SelectItem value="english">
-                            {language === 'en' ? 'English' : 
-                             language === 'es' ? 'Inglés' : 
-                             'Inglês'}
-                          </SelectItem>
-                          <SelectItem value="spanish">
-                            {language === 'en' ? 'Spanish' : 
-                             language === 'es' ? 'Español' : 
-                             'Espanhol'}
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <Label htmlFor="practicePoints" className="text-sm font-medium">
-                        {language === 'en' ? 'Points you want to practice' : 
-                         language === 'es' ? 'Puntos que quieres practicar' : 
-                         'Pontos que você quer treinar'}
-                      </Label>
-                      <Textarea
-                        id="practicePoints"
-                        name="practicePoints"
-                        value={formData.practicePoints || ""}
-                        onChange={handleChange}
-                        placeholder={
-                          language === 'en' ? 'Ex: I want to prepare for questions about leadership, teamwork...' : 
-                          language === 'es' ? 'Ej: Quiero prepararme para preguntas sobre liderazgo, trabajo en equipo...' : 
-                          'Ex: Quero me preparar para perguntas sobre liderança, trabalho em equipe...'
-                        }
-                        className="border-interview-light-blue focus:border-interview-blue resize-none min-h-[100px]"
-                      />
                     </div>
 
                     <div className="space-y-1">

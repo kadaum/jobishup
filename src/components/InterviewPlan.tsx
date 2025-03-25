@@ -23,13 +23,15 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
     }
   };
 
+  // Determine which sections to display
   const sections = [
     plan.process,
+    ...(plan.preparationSchedule ? [plan.preparationSchedule] : []),
     plan.questions,
     plan.questionsToAsk,
     plan.studyMaterials,
     plan.finalTips
-  ];
+  ].filter(Boolean); // Filter out any undefined sections
 
   return (
     <motion.div
