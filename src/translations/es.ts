@@ -1,3 +1,4 @@
+
 export const translations = {
   "app.title": "JobishUp",
   "app.subtitle": "Domina tus entrevistas laborales con un plan personalizado",
@@ -72,4 +73,16 @@ export const translations = {
   "savedPlans.errorDeleting": "Error al eliminar plan",
   "form.generate": "Generar Plan de Entrevista",
   "form.generating": "Generando tu plan...",
+  
+  // Footer translations
+  'footer.brandDescription': 'Tu compañero para el éxito en entrevistas. Prepárate con confianza para cualquier entrevista de trabajo.',
+  'footer.product': 'Producto',
+  'footer.home': 'Inicio',
+  'footer.resources': 'Recursos',
+  'footer.blog': 'Blog',
+  'footer.faq': 'Preguntas Frecuentes',
+  'footer.connect': 'Conéctate',
+  'footer.allRightsReserved': 'Todos los derechos reservados.',
+  'footer.terms': 'Términos de Servicio',
+  'footer.privacy': 'Política de Privacidad'
 };

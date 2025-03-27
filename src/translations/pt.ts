@@ -72,5 +72,17 @@ export const translations = {
   "savedPlans.delete": "Excluir",
   "savedPlans.deleted": "Plano excluído com sucesso",
   "savedPlans.errorFetching": "Erro ao carregar planos",
-  "savedPlans.errorDeleting": "Erro ao excluir plano"
+  "savedPlans.errorDeleting": "Erro ao excluir plano",
+  
+  // Footer translations
+  'footer.brandDescription': 'Seu companheiro para o sucesso em entrevistas. Prepare-se com confiança para qualquer entrevista de emprego.',
+  'footer.product': 'Produto',
+  'footer.home': 'Início',
+  'footer.resources': 'Recursos',
+  'footer.blog': 'Blog',
+  'footer.faq': 'Perguntas Frequentes',
+  'footer.connect': 'Conecte-se',
+  'footer.allRightsReserved': 'Todos os direitos reservados.',
+  'footer.terms': 'Termos de Serviço',
+  'footer.privacy': 'Política de Privacidade'
 };
