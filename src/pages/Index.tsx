@@ -13,8 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { savePlan } from "@/integrations/supabase/customClient";
 import { SparklesCore } from "@/components/ui/sparkles";
-import OptionalFieldsFaq from "@/components/OptionalFieldsFaq";
-
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [plan, setPlan] = useState<InterviewPlanType | null>(null);
@@ -26,7 +24,6 @@ const Index = () => {
   const {
     isAuthenticated
   } = useAuth();
-  
   const handleSubmit = async (data: FormData) => {
     try {
       setIsLoading(true);
@@ -46,7 +43,6 @@ const Index = () => {
       setIsLoading(false);
     }
   };
-
   const handleSavePlan = async () => {
     if (!isAuthenticated) {
       toast.error(t('auth.loginRequired'));
@@ -66,7 +62,6 @@ const Index = () => {
       toast.error(t('plan.saveError'));
     }
   };
-
   return <div className="min-h-screen relative">
       <div className="absolute inset-0 z-0">
         <SparklesCore id="tsparticlesbackground" background="#f5f7ff" minSize={0.6} maxSize={1.4} particleDensity={70} className="w-full h-full" particleColor="#3B82F6" speed={0.5} />
@@ -103,8 +98,6 @@ const Index = () => {
               </motion.div>
               
               <InterviewForm onSubmit={handleSubmit} isLoading={isLoading} />
-              
-              <OptionalFieldsFaq />
             </motion.div>}
 
           {isLoading && <motion.div key="loading" initial={{
@@ -148,5 +141,4 @@ const Index = () => {
       </div>
     </div>;
 };
-
 export default Index;
