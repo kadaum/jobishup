@@ -25,13 +25,13 @@ const Index = () => {
   const {
     isAuthenticated
   } = useAuth();
+
   const handleSubmit = async (data: FormData) => {
     try {
       setIsLoading(true);
       setPlan(null);
       setFormData(data);
 
-      // Ensure the selected language is passed to the API
       const dataWithLanguage = {
         ...data,
         selectedLanguage: language
@@ -46,6 +46,7 @@ const Index = () => {
       setIsLoading(false);
     }
   };
+
   const handleSavePlan = async () => {
     if (!isAuthenticated) {
       toast.error(t('auth.loginRequired'));
@@ -65,13 +66,12 @@ const Index = () => {
       toast.error(t('plan.saveError'));
     }
   };
+
   return <div className="min-h-screen relative">
-      {/* Sparkles Background */}
       <div className="absolute inset-0 z-0">
         <SparklesCore id="tsparticlesbackground" background="#f5f7ff" minSize={0.6} maxSize={1.4} particleDensity={70} className="w-full h-full" particleColor="#3B82F6" speed={0.5} />
       </div>
       
-      {/* Content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto pt-4 pb-20">
         <Header />
         
@@ -85,7 +85,6 @@ const Index = () => {
         }} transition={{
           duration: 0.3
         }}>
-              {/* Logo and Title - Centered before the form */}
               <motion.div className="flex flex-col items-center mb-8 text-center" initial={{
             scale: 0.9
           }} animate={{
@@ -96,7 +95,6 @@ const Index = () => {
             stiffness: 200
           }}>
                 <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-interview-blue to-interview-purple bg-clip-text text-transparent mb-2 flex items-center justify-center">
-                  <span className="mr-2">🚀</span>
                   JobishUp
                 </h1>
                 <p className="text-gray-600 text-sm md:text-base max-w-md text-center">
@@ -148,4 +146,5 @@ const Index = () => {
       </div>
     </div>;
 };
+
 export default Index;
