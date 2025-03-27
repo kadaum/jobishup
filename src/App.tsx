@@ -8,12 +8,14 @@ import SavedPlans from "./pages/SavedPlans";
 import PlanDetails from "./pages/PlanDetails";
 import { LanguageProvider } from "./context/LanguageContext";
 import { AuthProvider } from "./context/AuthContext";
+import SEOHead from "./components/SEOHead";
 
 function App() {
   return (
     <Router>
       <LanguageProvider>
         <AuthProvider>
+          <SEOHead />
           <Toaster richColors position="top-center" />
           <Routes>
             <Route path="/" element={<Index />} />

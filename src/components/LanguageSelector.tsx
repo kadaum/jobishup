@@ -5,16 +5,18 @@ import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Language } from "@/types";
+import { useLocation } from "react-router-dom";
 
 const LanguageSelector = () => {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
   
   const languageOptions = [
-    { value: "en" as Language, label: "English" },
-    { value: "pt" as Language, label: "Português" },
-    { value: "es" as Language, label: "Español" }
+    { value: "pt" as Language, label: "Português", url: "/" },
+    { value: "en" as Language, label: "English", url: "/en/" },
+    { value: "es" as Language, label: "Español", url: "/es/" }
   ];
 
   const toggleDropdown = () => setIsOpen(!isOpen);
@@ -47,6 +49,7 @@ const LanguageSelector = () => {
         size="sm"
         onClick={toggleDropdown}
         className="flex items-center gap-1 border-0 bg-transparent hover:bg-white/10"
+        aria-label="Select language"
       >
         <Globe className="h-4 w-4" />
         <span className="hidden sm:inline">{getLabelForLanguage(language)}</span>
@@ -67,6 +70,7 @@ const LanguageSelector = () => {
                 key={option.value}
                 className="flex items-center justify-between w-full px-4 py-2 text-sm text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 onClick={() => handleLanguageSelect(option.value)}
+                aria-current={language === option.value ? "true" : "false"}
               >
                 {option.label}
                 {language === option.value && <Check className="h-4 w-4" />}
