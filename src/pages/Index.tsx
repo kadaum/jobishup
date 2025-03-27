@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { savePlan } from "@/integrations/supabase/customClient";
 import { SparklesCore } from "@/components/ui/sparkles";
-
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [plan, setPlan] = useState<InterviewPlanType | null>(null);
@@ -25,13 +24,11 @@ const Index = () => {
   const {
     isAuthenticated
   } = useAuth();
-
   const handleSubmit = async (data: FormData) => {
     try {
       setIsLoading(true);
       setPlan(null);
       setFormData(data);
-
       const dataWithLanguage = {
         ...data,
         selectedLanguage: language
@@ -46,7 +43,6 @@ const Index = () => {
       setIsLoading(false);
     }
   };
-
   const handleSavePlan = async () => {
     if (!isAuthenticated) {
       toast.error(t('auth.loginRequired'));
@@ -66,7 +62,6 @@ const Index = () => {
       toast.error(t('plan.saveError'));
     }
   };
-
   return <div className="min-h-screen relative">
       <div className="absolute inset-0 z-0">
         <SparklesCore id="tsparticlesbackground" background="#f5f7ff" minSize={0.6} maxSize={1.4} particleDensity={70} className="w-full h-full" particleColor="#3B82F6" speed={0.5} />
@@ -97,7 +92,7 @@ const Index = () => {
                 <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-interview-blue to-interview-purple bg-clip-text text-transparent mb-2 flex items-center justify-center">
                   JobishUp
                 </h1>
-                <p className="text-gray-600 text-sm md:text-base max-w-md text-center">
+                <p className="text-gray-600 text-sm max-w-md md:text-base text-center">
                   {t('app.subtitle')}
                 </p>
               </motion.div>
@@ -146,5 +141,4 @@ const Index = () => {
       </div>
     </div>;
 };
-
 export default Index;
