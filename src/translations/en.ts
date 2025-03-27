@@ -70,5 +70,17 @@ export const translations = {
   "savedPlans.delete": "Delete",
   "savedPlans.deleted": "Plan deleted successfully",
   "savedPlans.errorFetching": "Error loading plans",
-  "savedPlans.errorDeleting": "Error deleting plan"
+  "savedPlans.errorDeleting": "Error deleting plan",
+  
+  // Footer translations
+  'footer.brandDescription': 'Your interview success companion. Prepare confidently for any job interview.',
+  'footer.product': 'Product',
+  'footer.home': 'Home',
+  'footer.resources': 'Resources',
+  'footer.blog': 'Blog',
+  'footer.faq': 'FAQs',
+  'footer.connect': 'Connect',
+  'footer.allRightsReserved': 'All rights reserved.',
+  'footer.terms': 'Terms of Service',
+  'footer.privacy': 'Privacy Policy'
 };
