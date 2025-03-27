@@ -25,15 +25,15 @@ const Header = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="flex flex-col items-center mb-4 md:flex-row md:justify-between md:items-center">
-        {/* Logo and Title - Now centered */}
+        {/* Logo and Title - Centered on mobile */}
         <motion.div 
-          className="flex flex-col items-center md:items-start md:flex-row md:gap-2"
+          className="flex flex-col items-center w-full md:w-auto md:flex-row md:gap-2"
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
         >
           <span className="text-3xl mb-2 md:mb-0">🚀</span>
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col items-center w-full md:items-start">
             <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-interview-blue to-interview-purple bg-clip-text text-transparent text-center md:text-left">
               {t('app.title')}
             </h1>
