@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { savePlan } from "@/integrations/supabase/customClient";
 import { SparklesCore } from "@/components/ui/sparkles";
+
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [plan, setPlan] = useState<InterviewPlanType | null>(null);
@@ -94,9 +95,9 @@ const Index = () => {
             type: "spring",
             stiffness: 200
           }}>
-                <span className="text-5xl mb-4">🚀</span>
-                <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-interview-blue to-interview-purple bg-clip-text text-transparent mb-2">
-                  {t('app.title')}
+                <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-interview-blue to-interview-purple bg-clip-text text-transparent mb-2 flex items-center justify-center">
+                  <span className="mr-2">🚀</span>
+                  JobishUp
                 </h1>
                 <p className="text-gray-600 text-sm md:text-base max-w-md text-center">
                   {t('app.subtitle')}
