@@ -13,6 +13,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { savePlan } from "@/integrations/supabase/customClient";
+import { SparklesCore } from "@/components/ui/sparkles";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -69,8 +70,23 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient pt-4 pb-20">
-      <div className="w-full max-w-7xl mx-auto">
+    <div className="min-h-screen relative">
+      {/* Sparkles Background */}
+      <div className="absolute inset-0 z-0">
+        <SparklesCore
+          id="tsparticlesbackground"
+          background="#f5f7ff"
+          minSize={0.6}
+          maxSize={1.4}
+          particleDensity={70}
+          className="w-full h-full"
+          particleColor="#3B82F6"
+          speed={0.5}
+        />
+      </div>
+      
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto pt-4 pb-20">
         <Header />
         
         <AnimatePresence mode="wait">
