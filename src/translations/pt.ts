@@ -1,5 +1,6 @@
+
 export const translations = {
-  "app.title": "Interview Prep",
+  "app.title": "JobishUp",
   "app.subtitle": "Domine suas entrevistas de emprego com um plano personalizado",
   "form.jobTitle": "Título da vaga",
   "form.jobTitlePlaceholder": "Ex: Desenvolvedor Frontend",
