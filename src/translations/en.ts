@@ -83,5 +83,9 @@ export const translations = {
   'footer.connect': 'Connect',
   'footer.allRightsReserved': 'All rights reserved.',
   'footer.terms': 'Terms of Service',
-  'footer.privacy': 'Privacy Policy'
+  'footer.privacy': 'Privacy Policy',
+  
+  // NotFound translations
+  'notFound.message': 'Oops! Page not found',
+  'notFound.returnHome': 'Return to Home'
 };

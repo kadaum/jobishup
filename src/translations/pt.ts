@@ -84,5 +84,9 @@ export const translations = {
   'footer.connect': 'Conecte-se',
   'footer.allRightsReserved': 'Todos os direitos reservados.',
   'footer.terms': 'Termos de Serviço',
-  'footer.privacy': 'Política de Privacidade'
+  'footer.privacy': 'Política de Privacidade',
+  
+  // NotFound translations
+  'notFound.message': 'Ops! Página não encontrada',
+  'notFound.returnHome': 'Voltar para a página inicial'
 };
