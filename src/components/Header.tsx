@@ -24,27 +24,9 @@ const Header = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex flex-col items-center mb-4 md:flex-row md:justify-between md:items-center">
-        {/* Logo and Title - Centered on all screens */}
-        <motion.div 
-          className="flex flex-col items-center mx-auto md:mx-0 md:flex-row md:gap-2"
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-        >
-          <span className="text-3xl mb-2 md:mb-0">🚀</span>
-          <div className="flex flex-col items-center md:items-start">
-            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-interview-blue to-interview-purple bg-clip-text text-transparent text-center md:text-left">
-              {t('app.title')}
-            </h1>
-            <p className="text-gray-600 text-xs md:text-sm text-center md:text-left">
-              {t('app.subtitle')}
-            </p>
-          </div>
-        </motion.div>
-        
+      <div className="flex justify-end mb-4">
         {/* Navigation and User Controls */}
-        <div className="flex items-center gap-2 mt-4 md:mt-0">
+        <div className="flex items-center gap-2">
           <LanguageSelector />
           
           {isAuthenticated ? (

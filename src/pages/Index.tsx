@@ -98,6 +98,22 @@ const Index = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
+              {/* Logo and Title - Centered before the form */}
+              <motion.div 
+                className="flex flex-col items-center mb-8 text-center"
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              >
+                <span className="text-5xl mb-4">🚀</span>
+                <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-interview-blue to-interview-purple bg-clip-text text-transparent mb-2">
+                  {t('app.title')}
+                </h1>
+                <p className="text-gray-600 text-sm md:text-base max-w-md">
+                  {t('app.subtitle')}
+                </p>
+              </motion.div>
+              
               <InterviewForm onSubmit={handleSubmit} isLoading={isLoading} />
             </motion.div>
           )}
