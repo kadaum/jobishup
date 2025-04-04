@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAnalytics } from "@/context/AnalyticsContext";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 
@@ -18,6 +18,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const { signIn, signUp, isAuthenticated } = useAuth();
   const { t } = useLanguage();
+  const { trackEvent } = useAnalytics();
   const navigate = useNavigate();
 
   // If user is authenticated, redirect to home
@@ -33,9 +34,13 @@ const Auth = () => {
     try {
       if (isSignUp) {
         await signUp(email, password, fullName);
+        trackEvent("Auth", "Sign Up", "Success");
       } else {
         await signIn(email, password);
+        trackEvent("Auth", "Sign In", "Success");
       }
+    } catch (error) {
+      trackEvent("Auth", isSignUp ? "Sign Up" : "Sign In", "Error");
     } finally {
       setLoading(false);
     }
@@ -46,6 +51,7 @@ const Auth = () => {
     setEmail("");
     setPassword("");
     setFullName("");
+    trackEvent("Auth", "Toggle Mode", isSignUp ? "Sign In" : "Sign Up");
   };
 
   return (

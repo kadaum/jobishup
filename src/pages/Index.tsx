@@ -9,46 +9,71 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
+import { useAnalytics } from "@/context/AnalyticsContext";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { savePlan } from "@/integrations/supabase/customClient";
 import { SparklesCore } from "@/components/ui/sparkles";
+
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [plan, setPlan] = useState<InterviewPlanType | null>(null);
   const [formData, setFormData] = useState<FormData | null>(null);
-  const {
-    t,
-    language
-  } = useLanguage();
-  const {
-    isAuthenticated
-  } = useAuth();
+  const { t, language } = useLanguage();
+  const { isAuthenticated } = useAuth();
+  const { trackEvent } = useAnalytics();
+  
   const handleSubmit = async (data: FormData) => {
     try {
       setIsLoading(true);
       setPlan(null);
       setFormData(data);
+      
+      trackEvent(
+        "Plan Generation", 
+        "Form Submit", 
+        `Job: ${data.jobTitle} at ${data.companyName}`
+      );
+      
       const dataWithLanguage = {
         ...data,
         selectedLanguage: language
       };
       const generatedPlan = await generateInterviewPlan(dataWithLanguage);
       setPlan(generatedPlan);
+      
+      trackEvent(
+        "Plan Generation", 
+        "Success", 
+        `Job: ${data.jobTitle} at ${data.companyName}`
+      );
+      
       toast.success(t('plan.ready'));
     } catch (error) {
       console.error("Error generating plan:", error);
+      
+      trackEvent(
+        "Plan Generation", 
+        "Error", 
+        `Job: ${data.jobTitle} at ${data.companyName}`
+      );
+      
       toast.error(t('plan.error'));
     } finally {
       setIsLoading(false);
     }
   };
+  
   const handleSavePlan = async () => {
     if (!isAuthenticated) {
       toast.error(t('auth.loginRequired'));
+      
+      trackEvent("Plan", "Save Failed", "Not Authenticated");
       return;
     }
+    
     if (!plan || !formData) return;
+    
     try {
       await savePlan({
         job_title: formData.jobTitle,
@@ -56,12 +81,27 @@ const Index = () => {
         content: plan,
         raw_text: plan.rawText
       });
+      
+      trackEvent(
+        "Plan", 
+        "Save Success", 
+        `Job: ${formData.jobTitle} at ${formData.companyName}`
+      );
+      
       toast.success(t('plan.saved'));
     } catch (error) {
       console.error("Error saving plan:", error);
+      
+      trackEvent(
+        "Plan", 
+        "Save Error", 
+        `Job: ${formData.jobTitle} at ${formData.companyName}`
+      );
+      
       toast.error(t('plan.saveError'));
     }
   };
+
   return <div className="min-h-screen relative">
       <div className="absolute inset-0 z-0">
         <SparklesCore id="tsparticlesbackground" background="#f5f7ff" minSize={0.6} maxSize={1.4} particleDensity={70} className="w-full h-full" particleColor="#3B82F6" speed={0.5} />
@@ -141,4 +181,5 @@ const Index = () => {
       </div>
     </div>;
 };
+
 export default Index;

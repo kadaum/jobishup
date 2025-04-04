@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Check, ChevronDown, Globe } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAnalytics } from "@/context/AnalyticsContext";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Language } from "@/types";
@@ -9,6 +10,7 @@ import { useLocation } from "react-router-dom";
 
 const LanguageSelector = () => {
   const { language, setLanguage } = useLanguage();
+  const { trackEvent } = useAnalytics();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -22,7 +24,10 @@ const LanguageSelector = () => {
   const toggleDropdown = () => setIsOpen(!isOpen);
   
   const handleLanguageSelect = (value: Language) => {
-    setLanguage(value);
+    if (value !== language) {
+      trackEvent("Language", "Change", `From ${language} to ${value}`);
+      setLanguage(value);
+    }
     setIsOpen(false);
   };
 
