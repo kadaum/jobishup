@@ -1,15 +1,17 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { LockOpen, Lock, ArrowRight, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
-import { useAnalytics } from "@/context/AnalyticsContext";
 import { toast } from "sonner";
 import { InterviewPlan } from "@/types";
 import LoginDialog from "./LoginDialog";
+import FeaturesList from "./payment/FeaturesList";
+import PriceDisplay from "./payment/PriceDisplay";
+import UnlockButton from "./payment/UnlockButton";
+import { usePaymentProcessor } from "./payment/PaymentProcessor";
 
 interface PayPlanProps {
   plan: InterviewPlan;
@@ -21,90 +23,31 @@ interface PayPlanProps {
 const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlanProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const { isAuthenticated } = useAuth();
-  const { trackEvent } = useAnalytics();
-
-  const getPriceDisplay = (): string => {
-    const currencyMap: Record<string, { symbol: string, amount: number }> = {
-      en: { symbol: '$', amount: 5.99 },
-      pt: { symbol: 'R$', amount: 5.99 },
-      es: { symbol: '€', amount: 5.99 }
-    };
-    
-    const { symbol, amount } = currencyMap[language] || currencyMap.pt;
-    return `${symbol}${amount.toFixed(2)}`;
-  };
+  const { createCheckoutSession } = usePaymentProcessor();
 
   const handleUnlockPremium = async () => {
     if (!isAuthenticated) {
       setIsLoginDialogOpen(true);
-      trackEvent("Premium Plan", "Unlock Attempt", "Not Authenticated");
       return;
     }
     
     setIsLoading(true);
     try {
-      // Get currency code based on language
-      const currencyMap: Record<string, string> = {
-        en: 'usd',
-        pt: 'brl',
-        es: 'eur'
-      };
-      const currency = currencyMap[language] || 'brl';
-      
-      // Get amount based on language (in cents)
-      const amountMap: Record<string, number> = {
-        en: 599, // $5.99 USD
-        pt: 599, // R$5.99 BRL
-        es: 599  // €5.99 EUR
-      };
-      const amount = amountMap[language] || 599;
-
-      console.log("Creating checkout session...");
-      console.log(`Amount: ${amount}, Currency: ${currency}`);
-      
-      // Call Supabase Edge Function with the full URL
-      const response = await fetch(
-        "https://shpxzvlqaykbsprgzbbe.supabase.co/functions/v1/create-premium-checkout",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount,
-            currency,
-            jobTitle,
-            companyName,
-            planId: plan.id || "anonymous"
-          }),
-        }
+      const checkoutUrl = await createCheckoutSession(
+        language,
+        jobTitle,
+        companyName,
+        plan.id || ""
       );
-
-      const data = await response.json();
       
-      if (!response.ok) {
-        console.error("Error response from checkout endpoint:", data);
-        throw new Error(data.error || "Failed to create checkout session");
-      }
+      // Unlock premium content immediately for testing/demo purposes
+      onPremiumPlanUnlocked();
       
-      // Handle successful payment immediately to improve user experience
-      // This simulates the premium unlock for demo purposes
-      if (data.url) {
-        console.log("Redirecting to checkout URL:", data.url);
-        trackEvent("Premium Plan", "Checkout Started", `Job: ${jobTitle}`);
-        
-        // Unlock premium content immediately for testing/demo purposes
-        onPremiumPlanUnlocked();
-        
-        // Then redirect to Stripe
-        window.location.href = data.url;
-      } else {
-        console.error("No checkout URL received:", data);
-        throw new Error("No checkout URL received");
-      }
-    } catch (error) {
+      // Then redirect to Stripe
+      window.location.href = checkoutUrl;
+    } catch (error: any) {
       console.error("Error processing premium upgrade:", error);
       toast.error(
         language === 'en' ? 'Error unlocking premium plan. Please try again.' : 
@@ -161,62 +104,15 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
              'Obtenha um plano de preparação para entrevista aprimorado com perguntas detalhadas, respostas modelo e estratégias personalizadas.'}
           </p>
           
-          <ul className="space-y-2 mb-4">
-            {[
-              language === 'en' ? '40+ additional tailored questions with model answers' : 
-              language === 'es' ? '40+ preguntas personalizadas adicionales con respuestas modelo' : 
-              '40+ perguntas personalizadas adicionais com respostas modelo',
-              
-              language === 'en' ? 'Interview simulation script with feedback points' : 
-              language === 'es' ? 'Guión de simulación de entrevista con puntos de retroalimentación' : 
-              'Roteiro de simulação de entrevista com pontos de feedback',
-              
-              language === 'en' ? 'Salary negotiation strategies and talking points' : 
-              language === 'es' ? 'Estrategias de negociación salarial y puntos de conversación' : 
-              'Estratégias de negociação salarial e pontos de discussão',
-              
-              language === 'en' ? 'Competency matrix with self-assessment guide' : 
-              language === 'es' ? 'Matriz de competencias con guía de autoevaluación' : 
-              'Matriz de competências com guia de autoavaliação'
-            ].map((feature, i) => (
-              <li key={i} className="flex items-start text-sm">
-                <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" />
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-          
-          <div className="bg-blue-50 p-3 rounded-md mb-4 text-center">
-            <span className="text-sm text-gray-500">
-              {language === 'en' ? 'One-time payment' : 
-               language === 'es' ? 'Pago único' : 
-               'Pagamento único'}
-            </span>
-            <div className="text-2xl font-bold text-blue-600">
-              {getPriceDisplay()}
-            </div>
-          </div>
+          <FeaturesList />
+          <PriceDisplay />
         </CardContent>
         
         <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 flex justify-center">
-          <Button
+          <UnlockButton 
             onClick={handleUnlockPremium}
-            disabled={isLoading}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md font-medium transition-all duration-200 w-full"
-          >
-            {isLoading ? (
-              language === 'en' ? "Processing..." : 
-              language === 'es' ? "Procesando..." : 
-              "Processando..."
-            ) : (
-              <span className="flex items-center justify-center">
-                {language === 'en' ? 'Unlock Premium' : 
-                 language === 'es' ? 'Desbloquear Premium' : 
-                 'Desbloquear Premium'}
-                <LockOpen className="ml-2 h-4 w-4" />
-              </span>
-            )}
-          </Button>
+            isLoading={isLoading}
+          />
         </div>
       </Card>
       
