@@ -24,9 +24,9 @@ const ExportOptions = ({ plan, printRef }: ExportOptionsProps) => {
   const shareTitle = language === 'en' ? 'Check out this Interview Preparation Plan' :
                   language === 'es' ? 'Mira este Plan de Preparación para Entrevista' :
                   'Confira este Plano de Preparação para Entrevista';
-  const shareText = language === 'en' ? 'I created this interview preparation plan with Interview Prep. Create yours at: ' :
-                 language === 'es' ? 'Creé este plan de preparación para entrevista con Interview Prep. Crea el tuyo en: ' :
-                 'Criei este plano de preparação para entrevista com Interview Prep. Crie o seu em: ';
+  const shareText = language === 'en' ? 'I created this interview preparation plan with JobishUp. Create yours at: ' :
+                 language === 'es' ? 'Creé este plan de preparación para entrevista con JobishUp. Crea el tuyo en: ' :
+                 'Criei este plano de preparação para entrevista com JobishUp. Crie o seu em: ';
   const shareUrl = `${websiteUrl}?utm_source=share`;
 
   const handleDownloadPDF = async () => {
