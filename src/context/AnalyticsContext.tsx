@@ -29,16 +29,38 @@ export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
   
   // Initialize Google Analytics
   useEffect(() => {
-    // Initialize regardless of environment since we've added the script to index.html
-    ReactGA.initialize(GA_TRACKING_ID);
-    console.log("Google Analytics initialized");
+    // Initialize with debug mode enabled to see console logs
+    ReactGA.initialize(GA_TRACKING_ID, {
+      gaOptions: {
+        debug_mode: true
+      }
+    });
+    console.log("Google Analytics initialized with ID:", GA_TRACKING_ID);
+    
+    // Track initial pageview
+    ReactGA.send({
+      hitType: "pageview",
+      page: location.pathname
+    });
   }, []);
 
   // Track page views
   useEffect(() => {
     // Send pageview with updated location
-    ReactGA.send({ hitType: "pageview", page: location.pathname });
+    ReactGA.send({
+      hitType: "pageview",
+      page: location.pathname,
+      title: document.title
+    });
     console.log(`Page view tracked: ${location.pathname}`);
+    
+    // Also use the global gtag function (belt and suspenders approach)
+    if (window.gtag) {
+      window.gtag('config', GA_TRACKING_ID, {
+        page_path: location.pathname,
+        page_title: document.title
+      });
+    }
   }, [location]);
 
   // Track language changes
@@ -49,6 +71,13 @@ export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
       label: language,
     });
     console.log(`Language change tracked: ${language}`);
+    
+    // Also track with global gtag function
+    if (window.gtag) {
+      window.gtag('event', 'language_change', {
+        'language': language
+      });
+    }
   }, [language]);
 
   // Track authentication state
@@ -60,6 +89,13 @@ export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
         action: "Authenticated",
       });
       console.log("User authentication tracked");
+      
+      // Also track with global gtag function
+      if (window.gtag) {
+        window.gtag('event', 'login', {
+          'method': 'Supabase'
+        });
+      }
     }
   }, [user]);
 
@@ -72,6 +108,15 @@ export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
       value,
     });
     console.log(`Event tracked - Category: ${category}, Action: ${action}, Label: ${label || "none"}`);
+    
+    // Also track with global gtag function
+    if (window.gtag) {
+      window.gtag('event', action.toLowerCase().replace(/\s+/g, '_'), {
+        'event_category': category,
+        'event_label': label,
+        'value': value
+      });
+    }
   };
 
   return (
