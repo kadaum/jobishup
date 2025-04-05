@@ -33,7 +33,7 @@ const LoginDialog = ({
   onSaveSuccess 
 }: LoginDialogProps) => {
   const [isSignUp, setIsSignUp] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { handleSavePlan } = usePlanSave();
 
   const toggleAuthMode = () => {
@@ -53,6 +53,23 @@ const LoginDialog = ({
     onOpenChange(false);
   };
 
+  // Helper function to get proper dialog text based on language
+  const getDialogText = (isSignUp: boolean) => {
+    if (language === 'en') {
+      return isSignUp 
+        ? 'Create an account to save your interview plan'
+        : 'Sign in to save your interview plan';
+    } else if (language === 'es') {
+      return isSignUp 
+        ? 'Crea una cuenta para guardar tu plan de entrevista'
+        : 'Inicia sesión para guardar tu plan de entrevista';
+    } else {
+      return isSignUp 
+        ? 'Crie uma conta para salvar seu plano de entrevista'
+        : 'Entre para salvar seu plano de entrevista';
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -61,9 +78,7 @@ const LoginDialog = ({
             {isSignUp ? t('auth.signUp') : t('auth.signIn')}
           </DialogTitle>
           <DialogDescription>
-            {isSignUp 
-              ? t('auth.signUpToSavePlan') || 'Create an account to save your interview plan'
-              : t('auth.signInToSavePlan') || 'Sign in to save your interview plan'}
+            {getDialogText(isSignUp)}
           </DialogDescription>
         </DialogHeader>
         

@@ -65,6 +65,8 @@ Deno.serve(async (req) => {
       );
     }
 
+    console.log(`Creating checkout session for amount: ${amount} ${currency}`);
+
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -90,6 +92,8 @@ Deno.serve(async (req) => {
         companyName
       }
     });
+
+    console.log(`Created session: ${session.id}`);
 
     // Return the session ID and URL
     return new Response(

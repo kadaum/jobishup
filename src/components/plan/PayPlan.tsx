@@ -60,6 +60,8 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
         es: 899
       };
       const amount = amountMap[language] || 2990;
+
+      console.log("Creating checkout session...");
       
       // Call Supabase Edge Function
       const response = await fetch(
@@ -82,11 +84,13 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
       const data = await response.json();
       
       if (!response.ok) {
+        console.error("Error response from checkout endpoint:", data);
         throw new Error(data.error || "Failed to create checkout session");
       }
       
       // Redirect to Stripe Checkout
       if (data.url) {
+        console.log("Redirecting to checkout URL:", data.url);
         trackEvent("Premium Plan", "Checkout Started", `Job: ${jobTitle}`);
         window.open(data.url, "_blank");
         
@@ -100,6 +104,7 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
         
         onPremiumPlanUnlocked();
       } else {
+        console.error("No checkout URL received:", data);
         throw new Error("No checkout URL received");
       }
     } catch (error) {
@@ -111,6 +116,16 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
       );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Set up the login dialog callback to trigger payment after login
+  const handleLoginSuccess = () => {
+    // Only proceed with payment if user is now authenticated
+    if (isAuthenticated) {
+      setTimeout(() => {
+        handleUnlockPremium();
+      }, 500); // Short delay to ensure auth state is fully updated
     }
   };
 
@@ -214,10 +229,7 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
         plan={plan}
         jobTitle={jobTitle}
         companyName={companyName}
-        onSaveSuccess={() => {
-          // After login, automatically try to unlock premium again
-          setTimeout(handleUnlockPremium, 500);
-        }}
+        onSaveSuccess={handleLoginSuccess}
       />
     </motion.div>
   );
