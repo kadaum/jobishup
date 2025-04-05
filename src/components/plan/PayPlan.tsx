@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { LockOpen, Lock, ArrowRight, CheckCircle } from "lucide-react";
@@ -26,9 +27,9 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
 
   const getPriceDisplay = (): string => {
     const currencyMap: Record<string, { symbol: string, amount: number }> = {
-      en: { symbol: '$', amount: 9.99 },
-      pt: { symbol: 'R$', amount: 29.90 },
-      es: { symbol: '€', amount: 8.99 }
+      en: { symbol: '$', amount: 1.99 },
+      pt: { symbol: 'R$', amount: 1.99 },
+      es: { symbol: '€', amount: 1.99 }
     };
     
     const { symbol, amount } = currencyMap[language] || currencyMap.pt;
@@ -54,11 +55,11 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
       
       // Get amount based on language (in cents)
       const amountMap: Record<string, number> = {
-        en: 999,
-        pt: 2990,
-        es: 899
+        en: 199,
+        pt: 199,
+        es: 199
       };
-      const amount = amountMap[language] || 2990;
+      const amount = amountMap[language] || 199;
 
       console.log("Creating checkout session...");
       
