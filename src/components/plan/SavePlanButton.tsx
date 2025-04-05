@@ -1,12 +1,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
-import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useAnalytics } from "@/context/AnalyticsContext";
 import { InterviewPlan } from "@/types";
-import { savePlan } from "@/integrations/supabase/customClient";
+import { usePlanSave } from "./auth/usePlanSave";
 
 interface SavePlanButtonProps {
   plan: InterviewPlan;
@@ -21,11 +20,12 @@ const SavePlanButton = ({
   companyName = "", 
   onLoginRequired 
 }: SavePlanButtonProps) => {
-  const { t, language } = useLanguage();
-  const { isAuthenticated, user } = useAuth();
+  const { t } = useLanguage();
+  const { isAuthenticated } = useAuth();
   const { trackEvent } = useAnalytics();
+  const { saving, handleSavePlan } = usePlanSave();
 
-  const handleSavePlan = async () => {
+  const handleSave = async () => {
     if (!isAuthenticated) {
       // Show login dialog if not authenticated
       onLoginRequired();
@@ -33,41 +33,17 @@ const SavePlanButton = ({
       return;
     }
     
-    try {
-      await savePlan({
-        job_title: jobTitle,
-        company_name: companyName,
-        content: plan,
-        raw_text: plan.rawText
-      });
-      
-      trackEvent(
-        "Plan", 
-        "Save Success", 
-        `Job: ${jobTitle} at ${companyName}`
-      );
-      
-      toast.success(t('plan.saved'));
-    } catch (error) {
-      console.error("Error saving plan:", error);
-      
-      trackEvent(
-        "Plan", 
-        "Save Error", 
-        `Job: ${jobTitle} at ${companyName}`
-      );
-      
-      toast.error(t('plan.saveError'));
-    }
+    await handleSavePlan(plan, jobTitle, companyName);
   };
 
   return (
     <Button 
-      onClick={handleSavePlan}
+      onClick={handleSave}
       className="w-full bg-green-600 hover:bg-green-700 text-white button-hover"
+      disabled={saving}
     >
       <Save className="mr-2 h-4 w-4" />
-      {t('plan.savePlan')}
+      {saving ? t('auth.loading') : t('plan.savePlan')}
     </Button>
   );
 };
