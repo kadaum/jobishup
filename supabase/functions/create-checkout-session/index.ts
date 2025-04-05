@@ -15,6 +15,8 @@ const handleCors = (req: Request) => {
 };
 
 Deno.serve(async (req) => {
+  console.log("Regular donation checkout function called");
+  
   // Handle CORS
   const corsResponse = handleCors(req);
   if (corsResponse) {
@@ -24,6 +26,7 @@ Deno.serve(async (req) => {
   try {
     // Only accept POST requests
     if (req.method !== 'POST') {
+      console.log("Method not allowed:", req.method);
       return new Response(
         JSON.stringify({ error: 'Method not allowed' }),
         { 
@@ -53,9 +56,13 @@ Deno.serve(async (req) => {
     });
 
     // Parse request body
-    const { amount, currency = 'brl' } = await req.json();
+    const requestData = await req.json();
+    console.log("Request data:", JSON.stringify(requestData, null, 2));
+    
+    const { amount, currency = 'brl' } = requestData;
     
     if (!amount || typeof amount !== 'number') {
+      console.log("Invalid amount:", amount);
       return new Response(
         JSON.stringify({ error: 'Amount is required and must be a number' }),
         { 
@@ -64,6 +71,12 @@ Deno.serve(async (req) => {
         }
       );
     }
+
+    console.log(`Creating donation checkout session for amount: ${amount} ${currency}`);
+
+    // Get the origin for success/cancel URLs
+    const origin = req.headers.get("origin") || "https://jobish-up.vercel.app";
+    console.log("Using origin for redirects:", origin);
 
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
@@ -74,6 +87,7 @@ Deno.serve(async (req) => {
             currency: currency,
             product_data: {
               name: 'Donation',
+              description: 'Thank you for supporting our work!'
             },
             unit_amount: amount, // Amount in cents
           },
@@ -81,9 +95,12 @@ Deno.serve(async (req) => {
         },
       ],
       mode: 'payment',
-      success_url: 'https://example.com/success',
-      cancel_url: 'https://example.com/cancel',
+      success_url: `${origin}/?donation_success=true`,
+      cancel_url: `${origin}/?donation_cancel=true`,
     });
+
+    console.log(`Created donation session: ${session.id}`);
+    console.log(`Checkout URL: ${session.url}`);
 
     // Return the session ID
     return new Response(
@@ -97,7 +114,7 @@ Deno.serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('Error creating checkout session:', error);
+    console.error('Error creating donation checkout session:', error);
     return new Response(
       JSON.stringify({ error: error.message || 'Unknown error occurred' }),
       { 

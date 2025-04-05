@@ -1,1 +1,8 @@
+
 project_id = "shpxzvlqaykbsprgzbbe"
+
+[functions.create-premium-checkout]
+verify_jwt = false
+
+[functions.create-checkout-session]
+verify_jwt = false

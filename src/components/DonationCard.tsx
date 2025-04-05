@@ -46,6 +46,8 @@ const DonationCard = () => {
       };
       const currency = currencyMap[language] || 'brl';
       
+      console.log(`Calling donation endpoint with amount: ${amountInCents} ${currency}`);
+      
       // Call our Supabase Edge Function
       const response = await fetch(
         "https://shpxzvlqaykbsprgzbbe.supabase.co/functions/v1/create-checkout-session",
@@ -64,18 +66,25 @@ const DonationCard = () => {
       const data = await response.json();
       
       if (!response.ok) {
+        console.error("Error response from donation endpoint:", data);
         throw new Error(data.error || "Failed to create checkout session");
       }
       
       // Redirect to Stripe Checkout
       if (data.url) {
-        window.open(data.url, "_blank");
+        console.log("Redirecting to donation checkout URL:", data.url);
+        window.location.href = data.url; // Redirect in same tab instead of opening new window
       } else {
+        console.error("No checkout URL received:", data);
         throw new Error("No checkout URL received");
       }
     } catch (error) {
       console.error("Error processing donation:", error);
-      toast.error("Error processing donation. Please try again.");
+      toast.error(
+        language === 'en' ? 'Error processing donation. Please try again.' : 
+        language === 'es' ? 'Error al procesar la donación. Por favor, inténtalo de nuevo.' : 
+        'Erro ao processar doação. Por favor, tente novamente.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -141,7 +150,9 @@ const DonationCard = () => {
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-200"
           >
             {isLoading ? (
-              "Processing..."
+              language === 'en' ? "Processing..." : 
+              language === 'es' ? "Procesando..." : 
+              "Processando..."
             ) : (
               <span className="flex items-center">
                 {t('donate.button')}

@@ -15,6 +15,8 @@ const handleCors = (req: Request) => {
 };
 
 Deno.serve(async (req) => {
+  console.log("Premium checkout function called");
+  
   // Handle CORS
   const corsResponse = handleCors(req);
   if (corsResponse) {
@@ -24,6 +26,7 @@ Deno.serve(async (req) => {
   try {
     // Only accept POST requests
     if (req.method !== 'POST') {
+      console.log("Method not allowed:", req.method);
       return new Response(
         JSON.stringify({ error: 'Method not allowed' }),
         { 
@@ -53,9 +56,13 @@ Deno.serve(async (req) => {
     });
 
     // Parse request body
-    const { amount, currency = 'brl', jobTitle, companyName, planId } = await req.json();
+    const requestData = await req.json();
+    console.log("Request data:", JSON.stringify(requestData, null, 2));
+    
+    const { amount, currency = 'brl', jobTitle, companyName, planId } = requestData;
     
     if (!amount || typeof amount !== 'number') {
+      console.log("Invalid amount:", amount);
       return new Response(
         JSON.stringify({ error: 'Amount is required and must be a number' }),
         { 
@@ -66,6 +73,11 @@ Deno.serve(async (req) => {
     }
 
     console.log(`Creating checkout session for amount: ${amount} ${currency}`);
+    console.log(`Job: ${jobTitle}, Company: ${companyName}, Plan ID: ${planId}`);
+
+    // Get the origin to use for success/cancel URLs
+    const origin = req.headers.get("origin") || "https://jobish-up.vercel.app";
+    console.log("Using origin for redirects:", origin);
 
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
@@ -75,7 +87,7 @@ Deno.serve(async (req) => {
           price_data: {
             currency: currency,
             product_data: {
-              name: `Premium Interview Plan: ${jobTitle} at ${companyName}`,
+              name: `Premium Interview Plan: ${jobTitle || 'Entrevista'} at ${companyName || 'Empresa'}`,
               description: 'Enhanced interview preparation with detailed questions and strategies',
             },
             unit_amount: amount, // Amount in cents
@@ -84,16 +96,17 @@ Deno.serve(async (req) => {
         },
       ],
       mode: 'payment',
-      success_url: `${req.headers.get("origin") || "https://jobish-up.vercel.app"}/premium-success?planId=${planId}`,
-      cancel_url: `${req.headers.get("origin") || "https://jobish-up.vercel.app"}/premium-cancel`,
+      success_url: `${origin}/?premium_success=true&planId=${planId || 'unknown'}`,
+      cancel_url: `${origin}/?premium_cancel=true`,
       metadata: {
-        planId,
-        jobTitle,
-        companyName
+        planId: planId || 'unknown',
+        jobTitle: jobTitle || 'Unknown Job',
+        companyName: companyName || 'Unknown Company'
       }
     });
 
     console.log(`Created session: ${session.id}`);
+    console.log(`Checkout URL: ${session.url}`);
 
     // Return the session ID and URL
     return new Response(
