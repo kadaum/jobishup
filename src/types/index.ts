@@ -37,6 +37,7 @@ export interface InterviewTypeSections {
 }
 
 export interface InterviewPlan {
+  id?: string;
   process: Section;
   questions: Section;
   questionsToAsk: Section;
@@ -46,6 +47,12 @@ export interface InterviewPlan {
   industrySections?: Section[];
   interviewTypeSections?: Section[];
   rawText?: string;
+  premiumContent?: {
+    detailedQuestions?: Section;
+    interviewSimulation?: Section;
+    salaryNegotiation?: Section;
+    competencyMatrix?: Section;
+  };
 }
 
 export interface Donation {

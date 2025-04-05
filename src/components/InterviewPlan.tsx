@@ -1,10 +1,11 @@
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { InterviewPlan as InterviewPlanType } from "@/types";
 import PlanSection from "./plan/PlanSection";
 import ExportOptions from "./plan/ExportOptions";
 import DonationCard from "./DonationCard";
+import PayPlan from "./plan/PayPlan";
 
 interface InterviewPlanProps {
   plan: InterviewPlanType;
@@ -14,6 +15,7 @@ interface InterviewPlanProps {
 
 const InterviewPlan = ({ plan, jobTitle = "", companyName = "" }: InterviewPlanProps) => {
   const printRef = useRef<HTMLDivElement>(null);
+  const [premiumUnlocked, setPremiumUnlocked] = useState(false);
   
   const container = {
     hidden: { opacity: 0 },
@@ -36,6 +38,12 @@ const InterviewPlan = ({ plan, jobTitle = "", companyName = "" }: InterviewPlanP
     plan.studyMaterials,
     plan.finalTips
   ].filter(Boolean); // Filter out any undefined sections
+
+  const handlePremiumUnlocked = () => {
+    setPremiumUnlocked(true);
+    // In a real implementation, this would fetch the premium content
+    // For now, we'll just update the state
+  };
 
   return (
     <motion.div
@@ -63,6 +71,23 @@ const InterviewPlan = ({ plan, jobTitle = "", companyName = "" }: InterviewPlanP
         initial="hidden"
         animate="show"
       >
+        {!premiumUnlocked && (
+          <motion.div 
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+            }}
+            className="opacity-100 transition-opacity duration-300"
+          >
+            <PayPlan 
+              plan={plan} 
+              jobTitle={jobTitle} 
+              companyName={companyName} 
+              onPremiumPlanUnlocked={handlePremiumUnlocked}
+            />
+          </motion.div>
+        )}
+
         <motion.div 
           variants={{
             hidden: { opacity: 0, y: 20 },

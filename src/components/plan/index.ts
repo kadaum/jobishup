@@ -8,6 +8,7 @@ import SavePlanButton from './SavePlanButton';
 import LoginDialog from './LoginDialog';
 import AuthForm from './auth/AuthForm';
 import AuthToggle from './auth/AuthToggle';
+import PayPlan from './PayPlan';
 
 export { 
   PlanSection, 
@@ -18,5 +19,6 @@ export {
   SavePlanButton,
   LoginDialog,
   AuthForm,
-  AuthToggle
+  AuthToggle,
+  PayPlan
 };

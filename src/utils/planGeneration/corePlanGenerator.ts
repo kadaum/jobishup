@@ -10,6 +10,13 @@ import { generateSectionTitles } from "./sectionTitles";
 import { generateRawText } from "./rawTextGenerator";
 
 /**
+ * Generates a unique ID for the plan
+ */
+const generatePlanId = (): string => {
+  return `plan_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+};
+
+/**
  * Generates the core interview plan structure
  */
 export const generateCorePlan = (formData: FormData): InterviewPlan => {
@@ -73,6 +80,7 @@ export const generateCorePlan = (formData: FormData): InterviewPlan => {
   
   // Create the response object
   const response: InterviewPlan = {
+    id: generatePlanId(),
     process: {
       title: sectionTitles.processSectionTitleShort,
       emoji: "📋",
