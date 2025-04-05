@@ -2,22 +2,31 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Download, Share2, Linkedin, Twitter, Facebook, Instagram, ArrowRight } from "lucide-react";
+import { Download, Share2, Linkedin, Twitter, Facebook, Instagram, ArrowRight, Save } from "lucide-react";
 import { toast } from "sonner";
 import { InterviewPlan } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import LoginDialog from "./LoginDialog";
+import { savePlan } from "@/integrations/supabase/customClient";
+import { useAnalytics } from "@/context/AnalyticsContext";
 
 interface ExportOptionsProps {
   plan: InterviewPlan;
   printRef: React.RefObject<HTMLDivElement>;
+  jobTitle?: string;
+  companyName?: string;
 }
 
-const ExportOptions = ({ plan, printRef }: ExportOptionsProps) => {
+const ExportOptions = ({ plan, printRef, jobTitle = "", companyName = "" }: ExportOptionsProps) => {
   const { t, language } = useLanguage();
+  const { isAuthenticated, user } = useAuth();
+  const { trackEvent } = useAnalytics();
   const [pdfGenerating, setPdfGenerating] = useState(false);
   const [showSocialOptions, setShowSocialOptions] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
   
   // Get the current website URL for sharing
   const websiteUrl = window.location.origin;
@@ -147,6 +156,42 @@ const ExportOptions = ({ plan, printRef }: ExportOptionsProps) => {
     window.open(whatsAppShareUrl, '_blank');
   };
 
+  const handleSavePlan = async () => {
+    if (!isAuthenticated) {
+      // Show login dialog if not authenticated
+      setShowLoginDialog(true);
+      trackEvent("Plan", "Save Attempt", "Not Authenticated");
+      return;
+    }
+    
+    try {
+      await savePlan({
+        job_title: jobTitle,
+        company_name: companyName,
+        content: plan,
+        raw_text: plan.rawText
+      });
+      
+      trackEvent(
+        "Plan", 
+        "Save Success", 
+        `Job: ${jobTitle} at ${companyName}`
+      );
+      
+      toast.success(t('plan.saved'));
+    } catch (error) {
+      console.error("Error saving plan:", error);
+      
+      trackEvent(
+        "Plan", 
+        "Save Error", 
+        `Job: ${jobTitle} at ${companyName}`
+      );
+      
+      toast.error(t('plan.saveError'));
+    }
+  };
+
   // Animation variant
   const item = {
     hidden: { opacity: 0, y: 20 },
@@ -176,6 +221,17 @@ const ExportOptions = ({ plan, printRef }: ExportOptionsProps) => {
           >
             <Share2 className="mr-2 h-4 w-4" />
             {t('sharePlan')}
+          </Button>
+        </div>
+        
+        {/* Save Plan Button */}
+        <div className="mt-4">
+          <Button 
+            onClick={handleSavePlan}
+            className="w-full bg-green-600 hover:bg-green-700 text-white button-hover"
+          >
+            <Save className="mr-2 h-4 w-4" />
+            {t('plan.savePlan')}
           </Button>
         </div>
         
@@ -232,6 +288,16 @@ const ExportOptions = ({ plan, printRef }: ExportOptionsProps) => {
           </motion.div>
         )}
       </div>
+      
+      {/* Login Dialog */}
+      <LoginDialog 
+        isOpen={showLoginDialog}
+        onOpenChange={setShowLoginDialog}
+        plan={plan}
+        jobTitle={jobTitle}
+        companyName={companyName}
+        onSaveSuccess={() => setShowLoginDialog(false)}
+      />
     </motion.div>
   );
 };

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { FormData, InterviewPlan as InterviewPlanType } from "@/types";
 import InterviewForm from "@/components/InterviewForm";
@@ -152,7 +153,7 @@ const Index = () => {
               <LoadingAnimation />
             </motion.div>}
 
-          {!isLoading && plan && <motion.div key="results" initial={{
+          {!isLoading && plan && formData && <motion.div key="results" initial={{
           opacity: 0
         }} animate={{
           opacity: 1
@@ -175,7 +176,11 @@ const Index = () => {
                     {t('plan.savePlan')}
                   </Button>}
               </div>
-              <InterviewPlan plan={plan} />
+              <InterviewPlan 
+                plan={plan} 
+                jobTitle={formData.jobTitle} 
+                companyName={formData.companyName}
+              />
             </motion.div>}
         </AnimatePresence>
       </div>

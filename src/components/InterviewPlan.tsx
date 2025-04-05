@@ -8,9 +8,11 @@ import DonationCard from "./DonationCard";
 
 interface InterviewPlanProps {
   plan: InterviewPlanType;
+  jobTitle?: string;
+  companyName?: string;
 }
 
-const InterviewPlan = ({ plan }: InterviewPlanProps) => {
+const InterviewPlan = ({ plan, jobTitle = "", companyName = "" }: InterviewPlanProps) => {
   const printRef = useRef<HTMLDivElement>(null);
   
   const container = {
@@ -71,7 +73,12 @@ const InterviewPlan = ({ plan }: InterviewPlanProps) => {
           <DonationCard />
         </motion.div>
 
-        <ExportOptions plan={plan} printRef={printRef} />
+        <ExportOptions 
+          plan={plan} 
+          printRef={printRef} 
+          jobTitle={jobTitle} 
+          companyName={companyName} 
+        />
       </motion.div>
     </motion.div>
   );

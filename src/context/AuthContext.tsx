@@ -9,7 +9,7 @@ interface AuthContextProps {
   user: User | null;
   session: Session | null;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ user: User } | null>;
   signOut: () => Promise<void>;
   loading: boolean;
   isAuthenticated: boolean;
@@ -19,7 +19,7 @@ const AuthContext = createContext<AuthContextProps>({
   user: null,
   session: null,
   signUp: async () => {},
-  signIn: async () => {},
+  signIn: async () => null,
   signOut: async () => {},
   loading: true,
   isAuthenticated: false,
@@ -75,12 +75,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error: any) {
       console.error("Error during sign up:", error);
       toast.error(error.message);
+      throw error;
     }
   };
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -92,9 +93,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         language === 'es' ? '¡Sesión iniciada con éxito!' : 
         'Login realizado com sucesso!'
       );
+      
+      return data ? { user: data.user } : null;
     } catch (error: any) {
       console.error("Error during sign in:", error);
       toast.error(error.message);
+      throw error;
     }
   };
 
@@ -111,6 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error: any) {
       console.error("Error during sign out:", error);
       toast.error(error.message);
+      throw error;
     }
   };
 
