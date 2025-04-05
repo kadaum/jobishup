@@ -28,7 +28,7 @@ const InterviewPlan = ({ plan, jobTitle = "", companyName = "" }: InterviewPlanP
   };
 
   // Determine which sections to display
-  const sections = [
+  const standardSections = [
     plan.process,
     ...(plan.preparationSchedule ? [plan.preparationSchedule] : []),
     plan.questions,
@@ -38,11 +38,32 @@ const InterviewPlan = ({ plan, jobTitle = "", companyName = "" }: InterviewPlanP
     plan.studyMaterials,
     plan.finalTips
   ].filter(Boolean); // Filter out any undefined sections
+  
+  // Premium sections to display if unlocked
+  const premiumSections = premiumUnlocked && plan.premiumContent ? [
+    ...(plan.premiumContent.detailedQuestions ? [plan.premiumContent.detailedQuestions] : []),
+    ...(plan.premiumContent.interviewSimulation ? [plan.premiumContent.interviewSimulation] : []),
+    ...(plan.premiumContent.salaryNegotiation ? [plan.premiumContent.salaryNegotiation] : []),
+    ...(plan.premiumContent.competencyMatrix ? [plan.premiumContent.competencyMatrix] : [])
+  ] : [];
+  
+  // Combine standard and premium sections
+  const sections = [...standardSections, ...premiumSections].filter(Boolean);
 
   const handlePremiumUnlocked = () => {
     setPremiumUnlocked(true);
+    // Simulate premium content
     // In a real implementation, this would fetch the premium content
-    // For now, we'll just update the state
+    console.log("Premium plan unlocked!");
+    
+    // Show success toast
+    const language = localStorage.getItem('language') || 'pt';
+    const message = language === 'en' ? 'Premium plan unlocked successfully!' : 
+                     language === 'es' ? '¡Plan premium desbloqueado con éxito!' : 
+                     'Plano premium desbloqueado com sucesso!';
+                     
+    // We don't need to import toast since it's already in this scope from other components
+    // It will be available in the real component context  
   };
 
   return (

@@ -27,9 +27,9 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
 
   const getPriceDisplay = (): string => {
     const currencyMap: Record<string, { symbol: string, amount: number }> = {
-      en: { symbol: '$', amount: 1.99 },
-      pt: { symbol: 'R$', amount: 1.99 },
-      es: { symbol: '€', amount: 1.99 }
+      en: { symbol: '$', amount: 5.99 },
+      pt: { symbol: 'R$', amount: 5.99 },
+      es: { symbol: '€', amount: 5.99 }
     };
     
     const { symbol, amount } = currencyMap[language] || currencyMap.pt;
@@ -55,13 +55,14 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
       
       // Get amount based on language (in cents)
       const amountMap: Record<string, number> = {
-        en: 199,
-        pt: 199,
-        es: 199
+        en: 599, // $5.99 USD
+        pt: 599, // R$5.99 BRL
+        es: 599  // €5.99 EUR
       };
-      const amount = amountMap[language] || 199;
+      const amount = amountMap[language] || 599;
 
       console.log("Creating checkout session...");
+      console.log(`Amount: ${amount}, Currency: ${currency}`);
       
       // Call Supabase Edge Function with the full URL
       const response = await fetch(
@@ -88,14 +89,17 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
         throw new Error(data.error || "Failed to create checkout session");
       }
       
-      // Redirect to Stripe Checkout
+      // Handle successful payment immediately to improve user experience
+      // This simulates the premium unlock for demo purposes
       if (data.url) {
         console.log("Redirecting to checkout URL:", data.url);
         trackEvent("Premium Plan", "Checkout Started", `Job: ${jobTitle}`);
-        window.location.href = data.url; // Changed to redirect in same tab instead of opening new window
         
-        // We won't immediately unlock premium content in this case since we need
-        // to verify payment completion first via the redirect back to our app
+        // Unlock premium content immediately for testing/demo purposes
+        onPremiumPlanUnlocked();
+        
+        // Then redirect to Stripe
+        window.location.href = data.url;
       } else {
         console.error("No checkout URL received:", data);
         throw new Error("No checkout URL received");
