@@ -6,6 +6,8 @@ import ShareButton from './ShareButton';
 import SocialShareOptions from './SocialShareOptions';
 import SavePlanButton from './SavePlanButton';
 import LoginDialog from './LoginDialog';
+import AuthForm from './auth/AuthForm';
+import AuthToggle from './auth/AuthToggle';
 
 export { 
   PlanSection, 
@@ -14,5 +16,7 @@ export {
   ShareButton,
   SocialShareOptions,
   SavePlanButton,
-  LoginDialog
+  LoginDialog,
+  AuthForm,
+  AuthToggle
 };
