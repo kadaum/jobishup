@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { LockOpen, Lock, ArrowRight, CheckCircle } from "lucide-react";
@@ -63,7 +62,7 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
 
       console.log("Creating checkout session...");
       
-      // Call Supabase Edge Function
+      // Call Supabase Edge Function with the full URL
       const response = await fetch(
         "https://shpxzvlqaykbsprgzbbe.supabase.co/functions/v1/create-premium-checkout",
         {
@@ -92,17 +91,10 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
       if (data.url) {
         console.log("Redirecting to checkout URL:", data.url);
         trackEvent("Premium Plan", "Checkout Started", `Job: ${jobTitle}`);
-        window.open(data.url, "_blank");
+        window.location.href = data.url; // Changed to redirect in same tab instead of opening new window
         
-        // In a real implementation, we would need a webhook to verify payment completion
-        // For now, we'll simulate successful payment and unlock premium content
-        toast.success(
-          language === 'en' ? 'Premium plan unlocked!' : 
-          language === 'es' ? '¡Plan premium desbloqueado!' : 
-          'Plano premium desbloqueado!'
-        );
-        
-        onPremiumPlanUnlocked();
+        // We won't immediately unlock premium content in this case since we need
+        // to verify payment completion first via the redirect back to our app
       } else {
         console.error("No checkout URL received:", data);
         throw new Error("No checkout URL received");
