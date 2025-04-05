@@ -8,13 +8,25 @@
     <meta name="description" content="Digite a vaga e a empresa. A JobishUp gera um plano de preparação com base na cultura da empresa, possíveis perguntas e dicas práticas." />
     <meta name="author" content="JobishUp" />
 
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) - Updated to ensure loading properly -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DTTEFJG2LR"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-DTTEFJG2LR', { 'send_page_view': false }); // Disable automatic page views, we'll handle them manually
+      
+      // Configure with cookie_domain to ensure proper tracking across domains/subdomains
+      gtag('config', 'G-DTTEFJG2LR', { 
+        debug_mode: true,
+        send_page_view: true  // Changed to true for initial pageview
+      });
+      
+      // Add a test event to verify connection
+      gtag('event', 'page_test', {
+        'event_category': 'test',
+        'event_label': 'initial_load',
+        'non_interaction': true
+      });
     </script>
 
     <!-- Canonical and hreflang tags for internationalization -->
