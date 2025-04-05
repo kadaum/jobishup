@@ -55,7 +55,7 @@ export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
     console.log(`Page view tracked: ${location.pathname}`);
     
     // Also use the global gtag function (belt and suspenders approach)
-    if (window.gtag) {
+    if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('config', GA_TRACKING_ID, {
         page_path: location.pathname,
         page_title: document.title
@@ -73,7 +73,7 @@ export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
     console.log(`Language change tracked: ${language}`);
     
     // Also track with global gtag function
-    if (window.gtag) {
+    if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'language_change', {
         'language': language
       });
@@ -91,7 +91,7 @@ export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
       console.log("User authentication tracked");
       
       // Also track with global gtag function
-      if (window.gtag) {
+      if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'login', {
           'method': 'Supabase'
         });
@@ -110,7 +110,7 @@ export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
     console.log(`Event tracked - Category: ${category}, Action: ${action}, Label: ${label || "none"}`);
     
     // Also track with global gtag function
-    if (window.gtag) {
+    if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', action.toLowerCase().replace(/\s+/g, '_'), {
         'event_category': category,
         'event_label': label,
