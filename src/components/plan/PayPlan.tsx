@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,9 +26,28 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
   const { language } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { createCheckoutSession } = usePaymentProcessor();
+  
+  // Store payment attempt in state so we can process it after login
+  const [pendingPaymentAttempt, setPendingPaymentAttempt] = useState(false);
+  
+  // Effect to handle processing payment after successful authentication
+  useEffect(() => {
+    // If user is authenticated and there's a pending payment attempt
+    if (isAuthenticated && pendingPaymentAttempt) {
+      // Clear the pending flag
+      setPendingPaymentAttempt(false);
+      
+      // Process the payment with a small delay to ensure auth state is fully updated
+      setTimeout(() => {
+        handleUnlockPremium();
+      }, 300);
+    }
+  }, [isAuthenticated, pendingPaymentAttempt]);
 
   const handleUnlockPremium = async () => {
     if (!isAuthenticated) {
+      // Set pending payment flag and open login dialog
+      setPendingPaymentAttempt(true);
       setIsLoginDialogOpen(true);
       return;
     }
@@ -52,19 +71,17 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
         language === 'es' ? 'Error al desbloquear el plan premium. Por favor, inténtalo de nuevo.' : 
         'Erro ao desbloquear o plano premium. Por favor, tente novamente.'
       );
+      setPendingPaymentAttempt(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Set up the login dialog callback to trigger payment after login
+  // Function to handle login success
   const handleLoginSuccess = () => {
-    // Only proceed with payment if user is now authenticated
-    if (isAuthenticated) {
-      setTimeout(() => {
-        handleUnlockPremium();
-      }, 500); // Short delay to ensure auth state is fully updated
-    }
+    // We'll let the useEffect handle the payment process
+    // It will detect isAuthenticated and pendingPaymentAttempt
+    console.log("Login successful, payment will process automatically");
   };
 
   return (
@@ -109,7 +126,7 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
         <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 flex flex-col gap-2">
           <UnlockButton 
             onClick={handleUnlockPremium}
-            isLoading={isLoading}
+            isLoading={isLoading || (isAuthenticated && pendingPaymentAttempt)}
           />
         </div>
       </Card>

@@ -41,16 +41,15 @@ const LoginDialog = ({
   };
 
   const handleAuthSuccess = async (userId?: string) => {
-    // If there's a userId, we can save the plan right away (sign in flow)
-    if (userId) {
-      const saved = await handleSavePlan(plan, jobTitle, companyName);
-      if (saved && onSaveSuccess) {
+    // Close the dialog first to avoid UI issues
+    onOpenChange(false);
+    
+    // Small delay to ensure state is updated before callback
+    setTimeout(() => {
+      if (onSaveSuccess) {
         onSaveSuccess();
       }
-    }
-    
-    // Close the dialog in either case
-    onOpenChange(false);
+    }, 200);
   };
 
   // Helper function to get proper dialog text based on language
