@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -9,6 +10,8 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAnalytics } from "@/context/AnalyticsContext";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
+import { Separator } from "@/components/ui/separator";
+import { Linkedin, Mail } from "lucide-react";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -16,7 +19,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp, isAuthenticated } = useAuth();
+  const { signIn, signUp, signInWithSocial, isAuthenticated } = useAuth();
   const { t } = useLanguage();
   const { trackEvent } = useAnalytics();
   const navigate = useNavigate();
@@ -43,6 +46,15 @@ const Auth = () => {
       trackEvent("Auth", isSignUp ? "Sign Up" : "Sign In", "Error");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSocialSignIn = async (provider: 'google' | 'linkedin_oidc') => {
+    try {
+      trackEvent("Auth", `Sign In with ${provider}`, "Attempt");
+      await signInWithSocial(provider);
+    } catch (error) {
+      trackEvent("Auth", `Sign In with ${provider}`, "Error");
     }
   };
 
@@ -122,6 +134,38 @@ const Auth = () => {
                       : t('auth.signInButton')}
                 </Button>
               </form>
+
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <Separator className="w-full" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    {t('auth.orContinueWith')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Button 
+                  variant="outline" 
+                  onClick={() => handleSocialSignIn('google')}
+                  type="button"
+                  className="flex items-center justify-center gap-2"
+                >
+                  <Mail className="h-4 w-4" />
+                  Google
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => handleSocialSignIn('linkedin_oidc')}
+                  type="button"
+                  className="flex items-center justify-center gap-2"
+                >
+                  <Linkedin className="h-4 w-4" />
+                  LinkedIn
+                </Button>
+              </div>
 
               <div className="mt-6 text-center">
                 <button

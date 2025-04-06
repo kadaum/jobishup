@@ -1,7 +1,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Session } from "@supabase/supabase-js";
+import { User, Session, Provider } from "@supabase/supabase-js";
 import { useLanguage } from "./LanguageContext";
 import { toast } from "sonner";
 
@@ -10,6 +10,7 @@ interface AuthContextProps {
   session: Session | null;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<{ user: User } | null>;
+  signInWithSocial: (provider: Provider) => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
   isAuthenticated: boolean;
@@ -20,6 +21,7 @@ const AuthContext = createContext<AuthContextProps>({
   session: null,
   signUp: async () => {},
   signIn: async () => null,
+  signInWithSocial: async () => {},
   signOut: async () => {},
   loading: true,
   isAuthenticated: false,
@@ -102,6 +104,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signInWithSocial = async (provider: Provider) => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      console.error(`Error during ${provider} sign in:`, error);
+      toast.error(error.message);
+      throw error;
+    }
+  };
+
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -128,6 +147,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         session,
         signUp,
         signIn,
+        signInWithSocial,
         signOut,
         loading,
         isAuthenticated,
