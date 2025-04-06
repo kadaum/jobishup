@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useAnalytics } from "@/context/AnalyticsContext";
 import { Separator } from "@/components/ui/separator";
 import { Linkedin, Mail } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 interface AuthFormProps {
   isSignUp: boolean;
@@ -22,6 +23,7 @@ const AuthForm = ({ isSignUp, onSuccess }: AuthFormProps) => {
   const { signIn, signUp, signInWithSocial } = useAuth();
   const { t } = useLanguage();
   const { trackEvent } = useAnalytics();
+  const location = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +57,12 @@ const AuthForm = ({ isSignUp, onSuccess }: AuthFormProps) => {
   const handleSocialLogin = async (provider: 'google' | 'linkedin') => {
     try {
       trackEvent("Auth", `Sign In with ${provider}`, "Attempt");
-      await signInWithSocial(provider);
+      
+      // Get the current pathname to redirect back to after auth
+      // For /auth page, redirect to homepage
+      const redirectPath = location.pathname === '/auth' ? '/' : location.pathname;
+      
+      await signInWithSocial(provider, redirectPath);
       // Note: onSuccess will be called via auth state change after redirect
     } catch (error: any) {
       console.error(`Error with ${provider} sign in:`, error);

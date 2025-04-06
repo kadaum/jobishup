@@ -22,6 +22,7 @@ interface LoginDialogProps {
   jobTitle: string;
   companyName: string;
   onSaveSuccess?: () => void;
+  redirectPath?: string;
 }
 
 const LoginDialog = ({ 
@@ -30,7 +31,8 @@ const LoginDialog = ({
   plan, 
   jobTitle, 
   companyName, 
-  onSaveSuccess 
+  onSaveSuccess,
+  redirectPath
 }: LoginDialogProps) => {
   const [isSignUp, setIsSignUp] = useState(false);
   const { t, language } = useLanguage();

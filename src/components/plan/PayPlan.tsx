@@ -12,6 +12,7 @@ import FeaturesList from "./payment/FeaturesList";
 import PriceDisplay from "./payment/PriceDisplay";
 import UnlockButton from "./payment/UnlockButton";
 import { usePaymentProcessor } from "./payment/PaymentProcessor";
+import { useLocation } from "react-router-dom";
 
 interface PayPlanProps {
   plan: InterviewPlan;
@@ -26,6 +27,7 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
   const { language } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { createCheckoutSession } = usePaymentProcessor();
+  const location = useLocation();
   
   // Store payment attempt in state so we can process it after login
   const [pendingPaymentAttempt, setPendingPaymentAttempt] = useState(false);
@@ -138,6 +140,7 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
         jobTitle={jobTitle}
         companyName={companyName}
         onSaveSuccess={handleLoginSuccess}
+        redirectPath={location.pathname} // Pass current path for redirect after OAuth
       />
     </motion.div>
   );

@@ -10,7 +10,7 @@ interface AuthContextProps {
   session: Session | null;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<{ user: User } | null>;
-  signInWithSocial: (provider: Provider) => Promise<void>;
+  signInWithSocial: (provider: Provider, redirectPath?: string) => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
   isAuthenticated: boolean;
@@ -104,15 +104,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signInWithSocial = async (provider: Provider) => {
+  const signInWithSocial = async (provider: Provider, redirectPath?: string) => {
     try {
       // Use the correct provider
       const providerToUse = provider === 'linkedin' ? 'linkedin_oidc' : provider;
       
+      // Determine the redirect URL based on the provided redirectPath
+      // If no redirectPath is provided, use the current URL to return to the same page
+      const redirectUrl = redirectPath 
+        ? `${window.location.origin}${redirectPath}` 
+        : window.location.href;
+      
+      console.log("Redirecting to:", redirectUrl);
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: providerToUse,
         options: {
-          redirectTo: window.location.origin
+          redirectTo: redirectUrl
         }
       });
 
