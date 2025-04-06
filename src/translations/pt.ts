@@ -1,4 +1,3 @@
-
 export const translations = {
   "app.title": "JobishUp",
   "app.subtitle": "Domine suas entrevistas de emprego com um plano personalizado",
@@ -63,6 +62,9 @@ export const translations = {
   "auth.dontHaveAccount": "Não tem uma conta? Criar",
   "auth.signOut": "Sair",
   "auth.loginRequired": "Você precisa estar logado para salvar o plano",
+  "auth.orContinueWith": "ou continuar com",
+  "auth.signInWithGoogle": "Entrar com Google",
+  "auth.signInWithLinkedIn": "Entrar com LinkedIn",
   "savedPlans.title": "Meus Planos Salvos",
   "savedPlans.myPlans": "Meus Planos",
   "savedPlans.loading": "Carregando seus planos...",
