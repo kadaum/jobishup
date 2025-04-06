@@ -1,5 +1,4 @@
-
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 import { toast } from "sonner";
@@ -9,7 +8,7 @@ import Auth from "./pages/Auth";
 import SavedPlans from "./pages/SavedPlans";
 import PlanDetails from "./pages/PlanDetails";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { AnalyticsProvider } from "./context/AnalyticsContext";
 import SEOHead from "./components/SEOHead";
 import Footer from "./components/Footer";
@@ -17,7 +16,9 @@ import Footer from "./components/Footer";
 // Test component to fire an event on mount
 const AppInitializer = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { language } = useLanguage();
+  const { isAuthenticated } = useAuth();
   
   useEffect(() => {
     // Direct gtag call to test
@@ -28,8 +29,15 @@ const AppInitializer = () => {
       console.log("App initialization event sent via gtag");
     }
     
-    // Check URL parameters for payment feedback
+    // Check URL parameters for payment feedback and authentication
     const searchParams = new URLSearchParams(location.search);
+    
+    // If user is authenticated and there's a hash fragment in the URL,
+    // it might be from a social auth redirect - clean it up
+    if (isAuthenticated && window.location.hash === '#') {
+      // Replace the URL without the hash
+      window.history.replaceState(null, '', window.location.pathname);
+    }
     
     // Handle premium payment success
     if (searchParams.get('premium_success')) {
@@ -76,7 +84,7 @@ const AppInitializer = () => {
         'Doação cancelada.'
       );
     }
-  }, [location, language]);
+  }, [location, language, isAuthenticated, navigate]);
 
   return null;
 };

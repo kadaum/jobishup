@@ -1,4 +1,3 @@
-
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { InterviewPlan as InterviewPlanType } from "@/types";
@@ -6,6 +5,7 @@ import PlanSection from "./plan/PlanSection";
 import ExportOptions from "./plan/ExportOptions";
 import DonationCard from "./DonationCard";
 import PayPlan from "./plan/PayPlan";
+import { toast } from "sonner";
 
 interface InterviewPlanProps {
   plan: InterviewPlanType;
@@ -27,7 +27,6 @@ const InterviewPlan = ({ plan, jobTitle = "", companyName = "" }: InterviewPlanP
     }
   };
 
-  // Determine which sections to display
   const standardSections = [
     plan.process,
     ...(plan.preparationSchedule ? [plan.preparationSchedule] : []),
@@ -37,17 +36,15 @@ const InterviewPlan = ({ plan, jobTitle = "", companyName = "" }: InterviewPlanP
     plan.questionsToAsk,
     plan.studyMaterials,
     plan.finalTips
-  ].filter(Boolean); // Filter out any undefined sections
-  
-  // Premium sections to display if unlocked
+  ].filter(Boolean);
+
   const premiumSections = premiumUnlocked && plan.premiumContent ? [
     plan.premiumContent.detailedQuestions,
     plan.premiumContent.interviewSimulation,
     plan.premiumContent.salaryNegotiation,
     plan.premiumContent.competencyMatrix
   ].filter(Boolean) : [];
-  
-  // Combine standard and premium sections
+
   const sections = [...standardSections, ...premiumSections].filter(Boolean);
 
   const handlePremiumUnlocked = () => {
@@ -117,8 +114,5 @@ const InterviewPlan = ({ plan, jobTitle = "", companyName = "" }: InterviewPlanP
     </motion.div>
   );
 };
-
-// Add the toast import that's used within the component
-import { toast } from "sonner";
 
 export default InterviewPlan;

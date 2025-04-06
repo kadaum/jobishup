@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,12 +22,20 @@ const Auth = () => {
   const { t } = useLanguage();
   const { trackEvent } = useAnalytics();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // If user is authenticated, redirect to home
-  if (isAuthenticated) {
-    navigate("/");
-    return null;
-  }
+  const getReturnUrl = () => {
+    const searchParams = new URLSearchParams(location.search);
+    const returnTo = searchParams.get('returnTo');
+    return returnTo || '/';
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const returnUrl = getReturnUrl();
+      navigate(returnUrl);
+    }
+  }, [isAuthenticated, navigate, location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +59,8 @@ const Auth = () => {
   const handleSocialSignIn = async (provider: 'google' | 'linkedin') => {
     try {
       trackEvent("Auth", `Sign In with ${provider}`, "Attempt");
-      await signInWithSocial(provider);
+      const returnUrl = getReturnUrl();
+      await signInWithSocial(provider, returnUrl);
     } catch (error) {
       trackEvent("Auth", `Sign In with ${provider}`, "Error");
     }
@@ -65,6 +73,10 @@ const Auth = () => {
     setFullName("");
     trackEvent("Auth", "Toggle Mode", isSignUp ? "Sign In" : "Sign Up");
   };
+
+  if (isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient pt-4 pb-20">

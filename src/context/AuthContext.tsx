@@ -109,11 +109,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Use the correct provider
       const providerToUse = provider === 'linkedin' ? 'linkedin_oidc' : provider;
       
-      // Determine the redirect URL based on the provided redirectPath
-      // If no redirectPath is provided, use the current URL to return to the same page
-      const redirectUrl = redirectPath 
-        ? `${window.location.origin}${redirectPath}` 
-        : window.location.href;
+      // Create the full redirect URL including the origin and path
+      // If redirectPath is provided, ensure it's properly encoded
+      let redirectUrl;
+      
+      if (redirectPath) {
+        // Use the redirectPath as the return path
+        redirectUrl = `${window.location.origin}${redirectPath.startsWith('/') ? redirectPath : `/${redirectPath}`}`;
+      } else {
+        // Default to current URL without the hash fragment
+        redirectUrl = window.location.href.split('#')[0];
+      }
       
       console.log("Redirecting to:", redirectUrl);
       
