@@ -106,8 +106,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithSocial = async (provider: Provider) => {
     try {
+      // Use the correct provider
+      const providerToUse = provider === 'linkedin' ? 'linkedin_oidc' : provider;
+      
       const { error } = await supabase.auth.signInWithOAuth({
-        provider,
+        provider: providerToUse,
         options: {
           redirectTo: window.location.origin
         }

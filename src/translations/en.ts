@@ -1,3 +1,4 @@
+
 export const translations = {
   "app.title": "JobishUp",
   "app.subtitle": "Master your job interviews with a personalized plan",

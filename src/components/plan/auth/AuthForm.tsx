@@ -52,7 +52,7 @@ const AuthForm = ({ isSignUp, onSuccess }: AuthFormProps) => {
     }
   };
 
-  const handleSocialLogin = async (provider: 'google' | 'linkedin_oidc') => {
+  const handleSocialLogin = async (provider: 'google' | 'linkedin') => {
     try {
       trackEvent("Auth", `Sign In with ${provider}`, "Attempt");
       await signInWithSocial(provider);
@@ -137,7 +137,7 @@ const AuthForm = ({ isSignUp, onSuccess }: AuthFormProps) => {
         </Button>
         <Button 
           variant="outline" 
-          onClick={() => handleSocialLogin('linkedin_oidc')}
+          onClick={() => handleSocialLogin('linkedin')}
           type="button"
           className="flex items-center justify-center gap-2"
         >

@@ -49,7 +49,7 @@ const Auth = () => {
     }
   };
 
-  const handleSocialSignIn = async (provider: 'google' | 'linkedin_oidc') => {
+  const handleSocialSignIn = async (provider: 'google' | 'linkedin') => {
     try {
       trackEvent("Auth", `Sign In with ${provider}`, "Attempt");
       await signInWithSocial(provider);
@@ -158,7 +158,7 @@ const Auth = () => {
                 </Button>
                 <Button 
                   variant="outline" 
-                  onClick={() => handleSocialSignIn('linkedin_oidc')}
+                  onClick={() => handleSocialSignIn('linkedin')}
                   type="button"
                   className="flex items-center justify-center gap-2"
                 >
