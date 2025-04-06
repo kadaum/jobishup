@@ -7,7 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useAnalytics } from "@/context/AnalyticsContext";
 import { Separator } from "@/components/ui/separator";
-import { Linkedin, Mail, Github } from "lucide-react";
+import { Linkedin, Mail } from "lucide-react";
 
 interface AuthFormProps {
   isSignUp: boolean;
@@ -133,7 +133,7 @@ const AuthForm = ({ isSignUp, onSuccess }: AuthFormProps) => {
           className="flex items-center justify-center gap-2"
         >
           <Mail className="h-4 w-4" />
-          Google
+          {t('auth.signInWithGoogle')}
         </Button>
         <Button 
           variant="outline" 
@@ -142,7 +142,7 @@ const AuthForm = ({ isSignUp, onSuccess }: AuthFormProps) => {
           className="flex items-center justify-center gap-2"
         >
           <Linkedin className="h-4 w-4" />
-          LinkedIn
+          {t('auth.signInWithLinkedIn')}
         </Button>
       </div>
     </div>

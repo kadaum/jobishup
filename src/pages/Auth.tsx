@@ -154,7 +154,7 @@ const Auth = () => {
                   className="flex items-center justify-center gap-2"
                 >
                   <Mail className="h-4 w-4" />
-                  Google
+                  {t('auth.signInWithGoogle')}
                 </Button>
                 <Button 
                   variant="outline" 
@@ -163,7 +163,7 @@ const Auth = () => {
                   className="flex items-center justify-center gap-2"
                 >
                   <Linkedin className="h-4 w-4" />
-                  LinkedIn
+                  {t('auth.signInWithLinkedIn')}
                 </Button>
               </div>
 
