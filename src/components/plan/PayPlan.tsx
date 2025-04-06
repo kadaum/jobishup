@@ -23,7 +23,6 @@ interface PayPlanProps {
 const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlanProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
-  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const { language } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { createCheckoutSession } = usePaymentProcessor();
@@ -43,18 +42,8 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
         plan.id || ""
       );
       
-      // Immediately unlock premium content for previewing
-      onPremiumPlanUnlocked();
-      
-      // Store checkout URL but don't redirect yet
-      setCheckoutUrl(url);
-      
-      // Show toast with instructions for testing
-      toast.success(
-        language === 'en' ? 'Premium plan unlocked for preview! Check out the content and proceed to payment when ready.' : 
-        language === 'es' ? '¡Plan premium desbloqueado para vista previa! Revisa el contenido y procede al pago cuando estés listo.' : 
-        'Plano premium desbloqueado para visualização! Confira o conteúdo e prossiga para o pagamento quando estiver pronto.'
-      );
+      // Immediately redirect to payment
+      window.location.href = url;
       
     } catch (error: any) {
       console.error("Error processing premium upgrade:", error);
@@ -65,13 +54,6 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
       );
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  // Function to proceed to payment after previewing content
-  const handleProceedToPayment = () => {
-    if (checkoutUrl) {
-      window.location.href = checkoutUrl;
     }
   };
 
@@ -125,24 +107,10 @@ const PayPlan = ({ plan, jobTitle, companyName, onPremiumPlanUnlocked }: PayPlan
         </CardContent>
         
         <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 flex flex-col gap-2">
-          {checkoutUrl ? (
-            <>
-              <UnlockButton 
-                onClick={handleProceedToPayment}
-                isLoading={false}
-              />
-              <p className="text-xs text-center text-gray-500 mt-2">
-                {language === 'en' ? 'You can now view the premium content. Click the button above to proceed to payment when ready.' : 
-                 language === 'es' ? 'Ahora puedes ver el contenido premium. Haz clic en el botón de arriba para proceder al pago cuando estés listo.' : 
-                 'Você já pode ver o conteúdo premium. Clique no botão acima para prosseguir para o pagamento quando estiver pronto.'}
-              </p>
-            </>
-          ) : (
-            <UnlockButton 
-              onClick={handleUnlockPremium}
-              isLoading={isLoading}
-            />
-          )}
+          <UnlockButton 
+            onClick={handleUnlockPremium}
+            isLoading={isLoading}
+          />
         </div>
       </Card>
       
